@@ -43,9 +43,7 @@ func GetArticles(offset, limit int, cond map[string]interface{}) ([]*Article, er
 
 func GetArticle(id int) (*Article, error) {
 	var article Article
-	err := db.Where("id = ? AND deleted_on = ?", id, 0).
-		First(&article).
-		Related(&article.Tag).Error
+	err := db.Preload("Tag").Where("id = ? AND deleted_on = ? ", id, 0).First(&article).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
