@@ -19,6 +19,13 @@ func Init() *gin.Engine {
 		apiv1.POST("/articles", v1.AddArticles)
 		apiv1.PUT("/articles/:id", v1.EditArticle)
 		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
+
+		// tags routers
+		apiv1.GET("/tags", v1.GetTags)
+		apiv1.GET("/tags/:id", v1.GetTag)
+		apiv1.POST("/tags", v1.AddTag)
+		apiv1.PUT("/tags/:id", v1.EditTag)
+		apiv1.DELETE("/tags/:id", v1.DeleteTag)
 	}
 	return r
 }
