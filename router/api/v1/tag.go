@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/astaxie/beego/validation"
@@ -56,9 +55,7 @@ func GetTag(c *gin.Context) {
 	valid.Min(id, 1, "id")
 
 	if valid.HasErrors() {
-		for _, err := range valid.Errors {
-			log.Print(err.Key, err.Message)
-		}
+		api.LogErrors(valid.Errors)
 		api.Response(c,
 			http.StatusBadRequest,
 			errno.INVALID_PARAMS, nil)
@@ -185,9 +182,7 @@ func DeleteTag(c *gin.Context) {
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
 	if valid.HasErrors() {
-		for _, err := range valid.Errors {
-			log.Print(err.Key, err.Message)
-		}
+		api.LogErrors(valid.Errors)
 		api.Response(c,
 			http.StatusBadRequest,
 			errno.INVALID_PARAMS, nil)
