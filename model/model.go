@@ -9,6 +9,15 @@ import (
 	"github.com/linehk/gin-blog/config"
 )
 
+type Model struct {
+	ID         int    `gorm:"primary_key" json:"id"`
+	CreatedAt  int    `json:"created_at"`
+	CreatedBy  string `json:"created_by"`
+	ModifiedAt int    `json:"modified_at"`
+	ModifiedBy string `json:"modified_by"`
+	DeletedAt  int    `json:"deleted_at"`
+}
+
 var db *gorm.DB
 
 func Init() {
