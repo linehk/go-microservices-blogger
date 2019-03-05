@@ -1,13 +1,20 @@
 package v1
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
-func Articles(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"test1": "test2",
-	})
+func GetArticles(c *gin.Context) {
+}
+
+func GetArticle(c *gin.Context) {
+}
+
+func AddArticles(c *gin.Context) {
+}
+
+func EditArticle(c *gin.Context) {
+}
+
+func DeleteArticle(c *gin.Context) {
 }

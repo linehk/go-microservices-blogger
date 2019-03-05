@@ -13,7 +13,12 @@ func Init() *gin.Engine {
 	gin.SetMode(config.Server.RunMode)
 	apiv1 := r.Group("/api/v1")
 	{
-		apiv1.GET("/articles", v1.Articles)
+		// articles routers
+		apiv1.GET("/articles", v1.GetArticles)
+		apiv1.GET("/articles/:id", v1.GetArticle)
+		apiv1.POST("/articles", v1.AddArticles)
+		apiv1.PUT("/articles/:id", v1.EditArticle)
+		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
 	}
 	return r
 }
