@@ -3,7 +3,10 @@ package api
 import (
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
+	"github.com/linehk/gin-blog/errno"
 )
+
+var PageSize = 10
 
 func PageNum(c *gin.Context) int {
 	count := 0
@@ -23,7 +26,7 @@ type Resp struct {
 func Response(c *gin.Context, httpCode, errCode int, data interface{}) {
 	c.JSON(httpCode, Resp{
 		Code: httpCode,
-		Msg:  "test",
+		Msg:  errno.Msg[errCode],
 		Data: data,
 	})
 	return
