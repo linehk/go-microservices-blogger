@@ -6,7 +6,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/linehk/GinBlog/config"
+	"github.com/linehk/gin-blog/config"
 )
 
 var db *gorm.DB

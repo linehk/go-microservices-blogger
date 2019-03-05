@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/linehk/GinBlog/config"
-	"github.com/linehk/GinBlog/model"
-	"github.com/linehk/GinBlog/router"
+	"github.com/linehk/gin-blog/config"
+	"github.com/linehk/gin-blog/model"
+	"github.com/linehk/gin-blog/router"
 )
 
 func init() {

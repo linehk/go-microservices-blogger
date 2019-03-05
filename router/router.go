@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/linehk/GinBlog/config"
-	"github.com/linehk/GinBlog/router/api/v1"
+	"github.com/linehk/gin-blog/config"
+	"github.com/linehk/gin-blog/router/api/v1"
 )
 
 func Init() *gin.Engine {
