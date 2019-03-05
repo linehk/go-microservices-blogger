@@ -3,6 +3,8 @@ package v1
 import (
 	"net/http"
 
+	"github.com/linehk/gin-blog/errno"
+
 	"github.com/linehk/gin-blog/router/api"
 
 	"github.com/Unknwon/com"
@@ -21,27 +23,28 @@ func GetTags(c *gin.Context) {
 		Name:     name,
 		State:    state,
 		PageNum:  api.PageNum(c),
-		PageSize: 10,
+		PageSize: api.PageSize,
 	}
 
 	tags, err := vmTag.GetAll()
 	if err != nil {
 		api.Response(c, http.StatusInternalServerError,
-			11, nil)
+			errno.ERROR_GET_TAGS_FAIL, nil)
 		return
 	}
 
 	count, err := vmTag.Count()
 	if err != nil {
 		api.Response(c, http.StatusInternalServerError,
-			22, nil)
+			errno.ERROR_COUNT_TAG_FAIL, nil)
 		return
 	}
 
-	api.Response(c, http.StatusOK, 33, map[string]interface{}{
-		"lists": tags,
-		"count": count,
-	})
+	api.Response(c, http.StatusOK,
+		errno.SUCCESS, map[string]interface{}{
+			"lists": tags,
+			"count": count,
+		})
 }
 
 func GetTag(c *gin.Context) {
