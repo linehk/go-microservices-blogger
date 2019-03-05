@@ -54,6 +54,15 @@ func (t *Tag) GetAll() ([]model.Tag, error) {
 	return tags, nil
 }
 
+func (t *Tag) Get() (*model.Tag, error) {
+	var tag *model.Tag
+	tag, err := model.GetTag(t.ID)
+	if err != nil {
+		return nil, err
+	}
+	return tag, nil
+}
+
 func (t *Tag) toMap() map[string]interface{} {
 	m := make(map[string]interface{})
 	m["deleted_on"] = 0

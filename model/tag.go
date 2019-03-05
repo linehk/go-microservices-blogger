@@ -69,6 +69,16 @@ func GetTags(offset, limit int, cond map[string]interface{}) ([]Tag, error) {
 	return tags, nil
 }
 
+func GetTag(id int) (*Tag, error) {
+	var tag Tag
+	if err := db.
+		Where("id = ? AND deleted_on = ?", id, 0).
+		First(&tag).Error; err != nil {
+		return nil, err
+	}
+	return &tag, nil
+}
+
 func GetTagsCount(cond map[string]interface{}) (int, error) {
 	var count int
 	if err := db.Model(&Tag{}).
