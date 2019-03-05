@@ -36,6 +36,7 @@ func Init() {
 	if err != nil {
 		log.Fatalf("can't load file: %s, err: %v", configFilePath, err)
 	}
+
 	mapTo("server", Server)
 	mapTo("database", Database)
 
