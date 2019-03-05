@@ -54,3 +54,10 @@ func BindAndValid(c *gin.Context, form interface{}) (int, int) {
 	}
 	return http.StatusOK, errno.SUCCESS
 }
+
+func LogErrors(errors []*validation.Error) {
+	for _, err := range errors {
+		log.Print(err.Key, err.Message)
+	}
+	return
+}
