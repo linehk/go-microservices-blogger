@@ -35,17 +35,17 @@ go build -o gin-blog
 ## 使用
 
 * 文章
-  1. 获取指定文章：GET `http://localhost:8888/api/v1/articles/1`
-  2. 获取全部文章：GET `http://localhost:8888/api/v1/articles`
-  3. 新增文章：POST `http://localhost:8888/api/v1/articles`，表单可用 `form-data` 或 `x-www-form-urlencoded` 形式
-  4. 修改文章：PUT `http://localhost:8888/api/v1/articles/1`
-  5. 删除文章：DELETE `http://localhost:8888/api/v1/articles/1`
+  * 获取指定文章：GET `http://localhost:8888/api/v1/articles/1`
+  * 获取全部文章：GET `http://localhost:8888/api/v1/articles`
+  * 新增文章：POST `http://localhost:8888/api/v1/articles`，表单可用 `form-data` 或 `x-www-form-urlencoded` 形式
+  * 修改文章：PUT `http://localhost:8888/api/v1/articles/1`
+  * 删除文章：DELETE `http://localhost:8888/api/v1/articles/1`
 * 标签
-  1. 获取指定标签：GET `http://localhost:8888/api/v1/tags/1`
-  2. 获取全部标签：GET `http://localhost:8888/api/v1/tags`
-  3. 新增标签：POST `http://localhost:8888/api/v1/tags`
-  4. 修改标签：PUT `http://localhost:8888/api/v1/tags/1`
-  5. 删除标签：DELETE `http://localhost:8888/api/v1/tags/1`
+  * 获取指定标签：GET `http://localhost:8888/api/v1/tags/1`
+  * 获取全部标签：GET `http://localhost:8888/api/v1/tags`
+  * 新增标签：POST `http://localhost:8888/api/v1/tags`
+  * 修改标签：PUT `http://localhost:8888/api/v1/tags/1`
+  * 删除标签：DELETE `http://localhost:8888/api/v1/tags/1`
 
 ## 参与贡献
 

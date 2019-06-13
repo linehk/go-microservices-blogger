@@ -35,18 +35,18 @@ And, run it:
 ## Usages
 
 * Article
-  1. get article: GET `http://localhost:8888/api/v1/articles/1`
-  2. get all article: GET `http://localhost:8888/api/v1/articles`
-  3. new article: POST `http://localhost:8888/api/v1/articles`, form allow to use `form-data` or `x-www-form-urlencoded` format
-  4. edit article: PUT `http://localhost:8888/api/v1/articles/1`
-  5. delete article: DELETE `http://localhost:8888/api/v1/articles/1`
+  * get article: GET `http://localhost:8888/api/v1/articles/1`
+  * get all article: GET `http://localhost:8888/api/v1/articles`
+  * new article: POST `http://localhost:8888/api/v1/articles`, form allow to use `form-data` or `x-www-form-urlencoded` format
+  * edit article: PUT `http://localhost:8888/api/v1/articles/1`
+  * delete article: DELETE `http://localhost:8888/api/v1/articles/1`
 
 * Tag
-  1. get tag: GET `http://localhost:8888/api/v1/tags/1`
-  2. get all tag: GET `http://localhost:8888/api/v1/tags`
-  3. new tag: POST `http://localhost:8888/api/v1/tags`
-  4. edit tag: PUT `http://localhost:8888/api/v1/tags/1`
-  5. delete tag: DELETE `http://localhost:8888/api/v1/tags/1`
+  * get tag: GET `http://localhost:8888/api/v1/tags/1`
+  * get all tag: GET `http://localhost:8888/api/v1/tags`
+  * new tag: POST `http://localhost:8888/api/v1/tags`
+  * edit tag: PUT `http://localhost:8888/api/v1/tags/1`
+  * delete tag: DELETE `http://localhost:8888/api/v1/tags/1`
 
 ## Contributing
 
