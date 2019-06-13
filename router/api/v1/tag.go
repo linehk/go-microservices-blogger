@@ -3,14 +3,12 @@ package v1
 import (
 	"net/http"
 
+	"github.com/Unknwon/com"
 	"github.com/astaxie/beego/validation"
+	"github.com/gin-gonic/gin"
 
 	"github.com/linehk/gin-blog/errno"
-
 	"github.com/linehk/gin-blog/router/api"
-
-	"github.com/Unknwon/com"
-	"github.com/gin-gonic/gin"
 	"github.com/linehk/gin-blog/vm"
 )
 

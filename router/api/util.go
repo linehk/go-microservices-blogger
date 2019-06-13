@@ -7,6 +7,7 @@ import (
 	"github.com/Unknwon/com"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
+
 	"github.com/linehk/gin-blog/errno"
 )
 
