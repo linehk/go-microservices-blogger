@@ -14,12 +14,6 @@ gin-blog is a simple blog RESTful API example that uses MySQL as the database.
 git clone https://github.com/linehk/gin-blog.git
 ```
 
-Or:
-
-```bash
-go get -u github.com/linehk/gin-blog
-```
-
 Then, build it:
 
 ```bash

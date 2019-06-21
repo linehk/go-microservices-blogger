@@ -14,12 +14,6 @@ gin-blog 是一个简单的博客 RESTful API 示例，使用 MySQL 作为数据
 git clone https://github.com/linehk/gin-blog.git
 ```
 
-或者：
-
-```bash
-go get -u github.com/linehk/gin-blog
-```
-
 然后进行编译：
 
 ```bash
