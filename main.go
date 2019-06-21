@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/linehk/gin-blog/config"
@@ -27,5 +28,5 @@ func main() {
 		WriteTimeout:   writeTimeout,
 		MaxHeaderBytes: maxHeaderBytes,
 	}
-	server.ListenAndServe()
+	log.Fatal(server.ListenAndServe())
 }

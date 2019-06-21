@@ -34,7 +34,6 @@ func Response(c *gin.Context, httpCode, errCode int, data interface{}) {
 		Msg:  errno.Msg[errCode],
 		Data: data,
 	})
-	return
 }
 
 func BindAndValid(c *gin.Context, form interface{}) (int, int) {
@@ -60,5 +59,4 @@ func LogErrors(errors []*validation.Error) {
 	for _, err := range errors {
 		log.Print(err.Key, err.Message)
 	}
-	return
 }

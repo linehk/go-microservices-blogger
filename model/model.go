@@ -61,12 +61,16 @@ func updateTimeStampForCreateCallback(scope *gorm.Scope) {
 		now := time.Now().Unix()
 		if createdOn, ok := scope.FieldByName("CreatedOn"); ok {
 			if createdOn.IsBlank {
-				createdOn.Set(now)
+				if err := createdOn.Set(now); err != nil {
+					scope.Log("updateTimeStampForCreateCallback createdOn.Set() err: %v", err)
+				}
 			}
 		}
 		if modifiedOn, ok := scope.FieldByName("ModifiedOn"); ok {
 			if modifiedOn.IsBlank {
-				modifiedOn.Set(now)
+				if err := modifiedOn.Set(now); err != nil {
+					scope.Log("updateTimeStampForCreateCallback modifiedOn.Set() err: %v", err)
+				}
 			}
 		}
 	}
@@ -74,7 +78,9 @@ func updateTimeStampForCreateCallback(scope *gorm.Scope) {
 
 func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
 	if _, ok := scope.Get("gorm:update_column"); !ok {
-		scope.SetColumn("ModifiedOn", time.Now().Unix())
+		if err := scope.SetColumn("ModifiedOn", time.Now().Unix()); err != nil {
+			scope.Log("updateTimeStampForUpdateCallback SetColumn() err: %v", err)
+		}
 	}
 }
 
