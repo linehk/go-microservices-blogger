@@ -10,14 +10,12 @@ import (
 	"github.com/linehk/gin-blog/router"
 )
 
-func init() {
-	config.Init()
-	model.Init()
-}
-
 func main() {
+	config.Setup()
+	model.Setup()
+
 	addr := fmt.Sprintf("localhost:%d", config.Server.HttpPort)
-	handler := router.Init()
+	handler := router.Setup()
 	readTimeout := config.Server.ReadTimeout
 	writeTimeout := config.Server.WriteTimeout
 	maxHeaderBytes := 1 << 20

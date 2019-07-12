@@ -15,93 +15,98 @@ import (
 func GetArticles(c *gin.Context) {
 	valid := validation.Validation{}
 	state := -1
+	// PostForm 从 urlencoded 表单或 multipart 表单返回指定 key 的值
 	if s := c.PostForm("state"); s != "" {
 		state = com.StrTo(s).MustInt()
+		// 规则：0 <= state <= 1
 		valid.Range(state, 0, 1, "state")
 	}
+
 	tagId := -1
 	if t := c.PostForm("tag_id"); t != "" {
 		tagId = com.StrTo(t).MustInt()
+		// 规则：tag_id >= 1
 		valid.Min(tagId, 1, "tag_id")
 	}
 
+	// 表单验证错误
 	if valid.HasErrors() {
 		api.LogErrors(valid.Errors)
-		api.Response(c,
-			http.StatusBadRequest,
-			errno.INVALID_PARAMS, nil)
+		api.Response(c, http.StatusBadRequest, errno.INVALID_PARAMS, nil)
 		return
 	}
 
-	vmArticle := vm.Article{
-		TagID:    tagId,
-		State:    state,
-		PageNum:  api.PageNum(c),
-		PageSize: api.PageSize,
-	}
+	// 构造结构体
+	vmArticle := vm.Article{TagID: tagId, State: state, PageNum: api.PageNum(c), PageSize: api.PageSize}
 
+	// 计数
 	count, err := vmArticle.Count()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_COUNT_ARTICLE_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_COUNT_ARTICLE_FAIL, nil)
 		return
 	}
 
+	// 获得所有文章
 	articles, err := vmArticle.GetAll()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_GET_ARTICLES_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_GET_ARTICLES_FAIL, nil)
 		return
 	}
 
-	data := make(map[string]interface{})
-	data["lists"] = articles
-	data["count"] = count
+	// 填充进 data
+	data := map[string]interface{}{"lists": articles, "count": count}
 
+	// 根据 data 响应
 	api.Response(c, http.StatusOK, errno.SUCCESS, data)
 }
 
 func GetArticle(c *gin.Context) {
+	// c.Param 返回 URL 参数的值
+	// router.GET("/user/:id", func(c *gin.Context) {
+	// 	// a GET request to /user/john
+	// 	id := c.Param("id") // id == "john"
+	// })
 	id := com.StrTo(c.Param("id")).MustInt()
 	valid := validation.Validation{}
+	// 规则：id >= 1
 	valid.Min(id, 1, "id")
 	if valid.HasErrors() {
 		api.LogErrors(valid.Errors)
-		api.Response(c,
-			http.StatusBadRequest,
-			errno.INVALID_PARAMS, nil)
+		api.Response(c, http.StatusBadRequest, errno.INVALID_PARAMS, nil)
 		return
 	}
 
+	// 构造结构体
 	vmArticle := vm.Article{ID: id}
 	exist, err := vmArticle.HasID()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
 		return
 	}
 	if !exist {
-		api.Response(c,
-			http.StatusOK,
-			errno.ERROR_NOT_EXIST_ARTICLE, nil)
+		api.Response(c, http.StatusOK, errno.ERROR_NOT_EXIST_ARTICLE, nil)
 		return
 	}
-
 	article, err := vmArticle.Get()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_GET_ARTICLE_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_GET_ARTICLE_FAIL, nil)
 		return
 	}
-
 	api.Response(c, http.StatusOK, errno.SUCCESS, article)
 }
 
+func HasArticleByName(c *gin.Context) {
+}
+
+func HasArticleByID(c *gin.Context) {
+}
+
+func GetArticlesCount(c *gin.Context) {
+}
+
+// 验证表单
 type AddArticleForm struct {
+	// form 标签用于 c.Bind(form)
 	TagID     int    `form:"tag_id" valid:"Required;Min(1)"`
 	Title     string `form:"title" valid:"Required;MaxSize(100)"`
 	Desc      string `form:"desc" valid:"Required;MaxSize(255)"`
@@ -110,26 +115,28 @@ type AddArticleForm struct {
 	State     int    `form:"state" valid:"Range(0,1)"`
 }
 
-func AddArticles(c *gin.Context) {
+func AddArticle(c *gin.Context) {
 	var form AddArticleForm
+	// 绑定并验证
 	httpCode, errCode := api.BindAndValid(c, &form)
 	if errCode != errno.SUCCESS {
 		api.Response(c, httpCode, errCode, nil)
 		return
 	}
+
+	// 检查 Tag 的 ID
 	vmTag := vm.Tag{ID: form.TagID}
 	exist, err := vmTag.HasID()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_EXIST_TAG_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_EXIST_TAG_FAIL, nil)
 		return
 	}
 	if !exist {
-		api.Response(c, http.StatusOK,
-			errno.ERROR_NOT_EXIST_TAG, nil)
+		api.Response(c, http.StatusOK, errno.ERROR_NOT_EXIST_TAG, nil)
 		return
 	}
+
+	// 构造结构体
 	vmArticle := vm.Article{
 		TagID:   form.TagID,
 		Title:   form.Title,
@@ -138,14 +145,13 @@ func AddArticles(c *gin.Context) {
 		State:   form.State,
 	}
 	if err := vmArticle.Add(); err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_ADD_ARTICLE_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_ADD_ARTICLE_FAIL, nil)
 		return
 	}
 	api.Response(c, http.StatusOK, errno.SUCCESS, nil)
 }
 
+// 验证表单
 type EditArticleForm struct {
 	ID         int    `form:"id" valid:"Required;Min(1)"`
 	TagID      int    `form:"tag_id" valid:"Required;Min(1)"`
@@ -157,12 +163,15 @@ type EditArticleForm struct {
 }
 
 func EditArticle(c *gin.Context) {
+	// 获取 id
 	form := EditArticleForm{ID: com.StrTo(c.Param("id")).MustInt()}
 	httpCode, errCode := api.BindAndValid(c, &form)
 	if errCode != errno.SUCCESS {
 		api.Response(c, httpCode, errCode, nil)
 		return
 	}
+
+	// 构造结构体
 	vmArticle := vm.Article{
 		ID:         form.ID,
 		TagID:      form.TagID,
@@ -172,40 +181,33 @@ func EditArticle(c *gin.Context) {
 		ModifiedBy: form.ModifiedBy,
 		State:      form.State,
 	}
+
+	// 检查 Article 的 ID
 	exist, err := vmArticle.HasID()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
 		return
 	}
 	if !exist {
-		api.Response(c,
-			http.StatusOK,
-			errno.ERROR_NOT_EXIST_ARTICLE, nil)
+		api.Response(c, http.StatusOK, errno.ERROR_NOT_EXIST_ARTICLE, nil)
 		return
 	}
 
+	// 检查 Tag 的 ID
 	vmTag := vm.Tag{ID: form.TagID}
 	exist, err = vmTag.HasID()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_EXIST_TAG_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_EXIST_TAG_FAIL, nil)
 		return
 	}
 	if !exist {
-		api.Response(c,
-			http.StatusOK,
-			errno.ERROR_NOT_EXIST_TAG, nil)
+		api.Response(c, http.StatusOK, errno.ERROR_NOT_EXIST_TAG, nil)
 		return
 	}
 
 	err = vmArticle.Edit()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_EDIT_ARTICLE_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_EDIT_ARTICLE_FAIL, nil)
 		return
 	}
 
@@ -218,33 +220,30 @@ func DeleteArticle(c *gin.Context) {
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 	if valid.HasErrors() {
 		api.LogErrors(valid.Errors)
-		api.Response(c,
-			http.StatusOK,
-			errno.INVALID_PARAMS, nil)
+		api.Response(c, http.StatusOK, errno.INVALID_PARAMS, nil)
 		return
 	}
 
+	// 检查 Article 的 ID
 	vmArticle := vm.Article{ID: id}
 	exist, err := vmArticle.HasID()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
 		return
 	}
 	if !exist {
-		api.Response(c, http.StatusOK,
-			errno.ERROR_NOT_EXIST_ARTICLE, nil)
+		api.Response(c, http.StatusOK, errno.ERROR_NOT_EXIST_ARTICLE, nil)
 		return
 	}
 
 	err = vmArticle.Delete()
 	if err != nil {
-		api.Response(c,
-			http.StatusInternalServerError,
-			errno.ERROR_DELETE_ARTICLE_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.ERROR_DELETE_ARTICLE_FAIL, nil)
 		return
 	}
 
 	api.Response(c, http.StatusOK, errno.SUCCESS, nil)
+}
+
+func DeleteArticles(c *gin.Context) {
 }

@@ -1,5 +1,6 @@
 package errno
 
+// 自定义的错误码
 const (
 	SUCCESS        = 200
 	ERROR          = 500
@@ -24,6 +25,7 @@ const (
 	ERROR_GET_ARTICLE_FAIL         = 10018
 )
 
+// 错误码对应的错误消息
 var Msg = map[int]string{
 	SUCCESS:        "成功",
 	ERROR:          "错误",
