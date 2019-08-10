@@ -50,4 +50,4 @@ For major changes, please open an issue first to discuss what you would like to 
 
 ## License
 
-[MIT License](./LICENSE "MIT License")
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flinehk%2Fgin-blog.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Flinehk%2Fgin-blog?ref=badge_large)
