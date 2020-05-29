@@ -9,5 +9,5 @@ require (
 	github.com/jinzhu/gorm v1.9.8
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/unknwon/com v1.0.1
-	gopkg.in/ini.v1 v1.42.0 // indirect
+	gopkg.in/ini.v1 v1.57.0 // indirect
 )

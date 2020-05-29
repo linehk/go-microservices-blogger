@@ -3,9 +3,9 @@ package v1
 import (
 	"net/http"
 
-	"github.com/unknwon/com"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
 
 	"github.com/linehk/gin-blog/errno"
 	"github.com/linehk/gin-blog/router/api"
