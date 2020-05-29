@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Unknwon/com"
+	"github.com/unknwon/com"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 
