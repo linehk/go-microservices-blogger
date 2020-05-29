@@ -3,7 +3,6 @@
 [![Build Status](https://travis-ci.org/linehk/gin-blog.svg?branch=master)](https://travis-ci.org/linehk/gin-blog)
 [![codecov](https://codecov.io/gh/linehk/gin-blog/branch/master/graph/badge.svg)](https://codecov.io/gh/linehk/gin-blog)
 [![Go Report Card](https://goreportcard.com/badge/github.com/linehk/gin-blog)](https://goreportcard.com/report/github.com/linehk/gin-blog)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flinehk%2Fgin-blog.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flinehk%2Fgin-blog?ref=badge_shield)
 
 [English](./README-en.md "English") | 简体中文
 
@@ -50,4 +49,4 @@ go build -o gin-blog
 
 ## 开源许可证
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flinehk%2Fgin-blog.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Flinehk%2Fgin-blog?ref=badge_large)
+[MIT License](./LICENSE "MIT License")
