@@ -1,11 +1,6 @@
 language: go
 
-env: GO111MODULE=on
-
-go: 
-  - 1.12.x
-
-git: 
+git:
   depth: 1
 
 install: true
