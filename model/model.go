@@ -23,24 +23,23 @@ type Model struct {
 
 var db *gorm.DB
 
+var dbc = config.Cfg.Database
+
 func Setup() {
 	// 构建 DSL
-	DSL := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		config.Database.User,
-		config.Database.Password,
-		config.Database.Host,
-		config.Database.Name)
+	DSL := fmt.Sprintf("%s:%s@%s(%s)/%s?charset=%s&parseTime=%s&loc=%s",
+		dbc.User, dbc.Password, dbc.Protocol, dbc.Host, dbc.Name, dbc.Charset, dbc.ParseTime, dbc.Loc)
 
 	// 连接到数据库
 	var err error
-	db, err = gorm.Open(config.Database.Type, DSL)
+	db, err = gorm.Open(dbc.Dialect, DSL)
 	if err != nil {
 		log.Fatalf("can't open database err: %v", err)
 	}
 
 	// 替换表名 Handler，设置表前缀
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return config.Database.TablePrefix + defaultTableName
+		return dbc.TablePrefix + defaultTableName
 	}
 
 	// 注册回调函数

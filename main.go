@@ -1,30 +1,26 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/linehk/gin-blog/config"
 	"github.com/linehk/gin-blog/model"
 	"github.com/linehk/gin-blog/router"
 )
 
+var sc = config.Cfg.Server
+
 func main() {
-	config.Setup()
 	model.Setup()
 
-	addr := fmt.Sprintf("localhost:%d", config.Server.HttpPort)
-	handler := router.Setup()
-	readTimeout := config.Server.ReadTimeout
-	writeTimeout := config.Server.WriteTimeout
-	maxHeaderBytes := 1 << 20
 	server := &http.Server{
-		Addr:           addr,
-		Handler:        handler,
-		ReadTimeout:    readTimeout,
-		WriteTimeout:   writeTimeout,
-		MaxHeaderBytes: maxHeaderBytes,
+		Addr:           sc.Addr,
+		Handler:        router.Setup(),
+		ReadTimeout:    time.Duration(sc.ReadTimeout * int(time.Second)), // 转换成时间数据结构
+		WriteTimeout:   time.Duration(sc.WriteTimeout * int(time.Second)),
+		MaxHeaderBytes: 1 << 20,
 	}
 	log.Fatal(server.ListenAndServe())
 }

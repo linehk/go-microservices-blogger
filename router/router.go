@@ -12,7 +12,7 @@ func Setup() *gin.Engine {
 	// 中间件
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	gin.SetMode(config.Server.RunMode)
+	gin.SetMode(config.Cfg.Server.Mode)
 	apiv1 := r.Group("/api/v1")
 	{
 		// articles 路由
