@@ -1,6 +1,6 @@
 # gin-blog
 
-![Travis (.org)](https://img.shields.io/travis/linehk/gin-blog)
+[![Build Status](https://travis-ci.org/linehk/gin-blog.svg?branch=master)](https://travis-ci.org/linehk/gin-blog)
 [![codecov](https://codecov.io/gh/linehk/gin-blog/branch/master/graph/badge.svg)](https://codecov.io/gh/linehk/gin-blog)
 [![Go Report Card](https://goreportcard.com/badge/github.com/linehk/gin-blog)](https://goreportcard.com/report/github.com/linehk/gin-blog)
 
