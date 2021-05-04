@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS `blog` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `gin-blog` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-USE `blog`;
+USE `gin-blog`;
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -18,7 +18,7 @@ CREATE TABLE `blog_article` (
   `deleted_on` int(10) unsigned DEFAULT '0',
   `state` tinyint(3) unsigned DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `blog_tag`;
 CREATE TABLE `blog_tag` (
@@ -31,4 +31,4 @@ CREATE TABLE `blog_tag` (
   `deleted_on` int(10) unsigned DEFAULT '0',
   `state` tinyint(3) unsigned DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

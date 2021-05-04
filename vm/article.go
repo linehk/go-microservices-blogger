@@ -4,7 +4,7 @@ import (
 	"github.com/linehk/gin-blog/model"
 )
 
-// 用于传递数据
+// Article 用于传递数据
 type Article struct {
 	ID      int
 	TagID   int

@@ -25,21 +25,21 @@ func GetTags(c *gin.Context) {
 
 	tags, err := vmTag.GetAll()
 	if err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_GET_TAGS_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.GetAllTagFail, nil)
 		return
 	}
 
 	// 计数
 	count, err := vmTag.Count()
 	if err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_COUNT_TAG_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.CountTagFail, nil)
 		return
 	}
 
 	// 填充数据
 	data := map[string]interface{}{"lists": tags, "count": count}
 
-	api.Response(c, http.StatusOK, errno.SUCCESS, data)
+	api.Response(c, http.StatusOK, errno.Success, data)
 }
 
 func GetTag(c *gin.Context) {
@@ -51,35 +51,26 @@ func GetTag(c *gin.Context) {
 	// 表单验证错误
 	if valid.HasErrors() {
 		api.LogErrors(valid.Errors)
-		api.Response(c, http.StatusBadRequest, errno.INVALID_PARAMS, nil)
+		api.Response(c, http.StatusBadRequest, errno.InvalidParams, nil)
 	}
 
 	vmTag := vm.Tag{ID: id}
 	exist, err := vmTag.HasID()
 	if err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_GET_TAGS_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.GetExistedTagFail, nil)
 		return
 	}
 	if !exist {
-		api.Response(c, http.StatusOK, errno.ERROR_NOT_EXIST_ARTICLE, nil)
+		api.Response(c, http.StatusOK, errno.TagIsNotExist, nil)
 		return
 	}
 
 	tag, err := vmTag.Get()
 	if err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_GET_ARTICLE_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.GetExistedTagFail, nil)
 		return
 	}
-	api.Response(c, http.StatusOK, errno.SUCCESS, tag)
-}
-
-func HasTagByName(c *gin.Context) {
-}
-
-func HasTagByID(c *gin.Context) {
-}
-
-func GetTagsCount(c *gin.Context) {
+	api.Response(c, http.StatusOK, errno.Success, tag)
 }
 
 type AddTagForm struct {
@@ -91,7 +82,7 @@ type AddTagForm struct {
 func AddTag(c *gin.Context) {
 	var form AddTagForm
 	httpCode, errCode := api.BindAndValid(c, &form)
-	if errCode != errno.SUCCESS {
+	if errCode != errno.Success {
 		api.Response(c, httpCode, errCode, nil)
 		return
 	}
@@ -100,21 +91,21 @@ func AddTag(c *gin.Context) {
 
 	exist, err := vmTag.HasName()
 	if err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_EXIST_TAG_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.GetExistedTagFail, nil)
 		return
 	}
 	if exist {
-		api.Response(c, http.StatusOK, errno.ERROR_EXIST_TAG, nil)
+		api.Response(c, http.StatusOK, errno.TagNameIsExisted, nil)
 		return
 	}
 
 	err = vmTag.Add()
 	if err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_ADD_TAG_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.AddTagFail, nil)
 		return
 	}
 
-	api.Response(c, http.StatusOK, errno.SUCCESS, nil)
+	api.Response(c, http.StatusOK, errno.Success, nil)
 }
 
 type EditTagForm struct {
@@ -127,7 +118,7 @@ type EditTagForm struct {
 func EditTag(c *gin.Context) {
 	form := EditTagForm{ID: com.StrTo(c.Param("id")).MustInt()}
 	httpCode, errCode := api.BindAndValid(c, &form)
-	if errCode != errno.SUCCESS {
+	if errCode != errno.Success {
 		api.Response(c, httpCode, errCode, nil)
 		return
 	}
@@ -136,21 +127,21 @@ func EditTag(c *gin.Context) {
 
 	exist, err := vmTag.HasID()
 	if err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_EXIST_TAG_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.GetExistedTagFail, nil)
 		return
 	}
 
 	if !exist {
-		api.Response(c, http.StatusOK, errno.ERROR_NOT_EXIST_TAG, nil)
+		api.Response(c, http.StatusOK, errno.TagIsNotExist, nil)
 		return
 	}
 
 	err = vmTag.Edit()
 	if err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_EDIT_TAG_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.EditTagFail, nil)
 		return
 	}
-	api.Response(c, http.StatusOK, errno.SUCCESS, nil)
+	api.Response(c, http.StatusOK, errno.Success, nil)
 }
 
 func DeleteTag(c *gin.Context) {
@@ -160,28 +151,25 @@ func DeleteTag(c *gin.Context) {
 
 	if valid.HasErrors() {
 		api.LogErrors(valid.Errors)
-		api.Response(c, http.StatusBadRequest, errno.INVALID_PARAMS, nil)
+		api.Response(c, http.StatusBadRequest, errno.InvalidParams, nil)
 	}
 
 	vmTag := vm.Tag{ID: id}
 	exist, err := vmTag.HasID()
 	if err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_EXIST_TAG_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.GetExistedTagFail, nil)
 		return
 	}
 
 	if !exist {
-		api.Response(c, http.StatusOK, errno.ERROR_NOT_EXIST_TAG, nil)
+		api.Response(c, http.StatusOK, errno.TagIsNotExist, nil)
 		return
 	}
 
 	if err := vmTag.Delete(); err != nil {
-		api.Response(c, http.StatusInternalServerError, errno.ERROR_DELETE_TAG_FAIL, nil)
+		api.Response(c, http.StatusInternalServerError, errno.DeleteTagFail, nil)
 		return
 	}
 
-	api.Response(c, http.StatusOK, errno.SUCCESS, nil)
-}
-
-func DeleteTags(c *gin.Context) {
+	api.Response(c, http.StatusOK, errno.Success, nil)
 }

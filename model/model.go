@@ -60,7 +60,7 @@ func Setup() {
 }
 
 func Close() {
-	defer db.Close()
+	db.Close()
 }
 
 // 注册 gorm 回调函数

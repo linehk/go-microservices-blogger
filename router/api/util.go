@@ -11,7 +11,7 @@ import (
 	"github.com/linehk/gin-blog/errno"
 )
 
-// 每页 Article 的数量
+// PageSize 每页 Article 的数量
 var PageSize = 10
 
 func PageNum(c *gin.Context) int {
@@ -31,30 +31,30 @@ func PageNum(c *gin.Context) int {
 	return count
 }
 
-// 统一返回格式
+// Resp 统一返回格式
 type Resp struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
 
-// 根据数据返回响应
+// Response 根据数据返回响应
 func Response(c *gin.Context, httpCode, errCode int, data interface{}) {
 	c.JSON(httpCode, Resp{Code: httpCode, Msg: errno.Msg[errCode], Data: data})
 }
 
-// 绑定并验证表单
+// BindAndValid 绑定并验证表单
 func BindAndValid(c *gin.Context, form interface{}) (int, int) {
 	// c.Bind(form) 会根据 Content-Type 选择 binding
 	err := c.Bind(form)
 	if err != nil {
-		return http.StatusBadRequest, errno.INVALID_PARAMS
+		return http.StatusBadRequest, errno.InvalidParams
 	}
 	valid := validation.Validation{}
 	// 验证该表单，必须是结构体或结构体指针
 	ok, err := valid.Valid(form)
 	if err != nil {
-		return http.StatusInternalServerError, errno.ERROR
+		return http.StatusInternalServerError, errno.Error
 	}
 	// 验证失败
 	if !ok {
@@ -62,12 +62,12 @@ func BindAndValid(c *gin.Context, form interface{}) (int, int) {
 		for _, err := range valid.Errors {
 			log.Print(err.Key, err.Message)
 		}
-		return http.StatusBadRequest, errno.INVALID_PARAMS
+		return http.StatusBadRequest, errno.InvalidParams
 	}
-	return http.StatusOK, errno.SUCCESS
+	return http.StatusOK, errno.Success
 }
 
-// 把验证错误输出到日志
+// LogErrors 把验证错误输出到日志
 func LogErrors(errors []*validation.Error) {
 	for _, err := range errors {
 		log.Print(err.Key, err.Message)

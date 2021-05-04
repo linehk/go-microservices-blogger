@@ -6,7 +6,7 @@ import (
 
 type Article struct {
 	Model // 自定义的 Model
-	// 关系：Article 属于 Tag，TagID 为外键
+	// 关系：Article 拥有 Tag，TagID 为外键
 	TagID   int    `gorm:"index" json:"tag_id"` // 索引
 	Tag     Tag    `json:"tag"`
 	Title   string `json:"title"`
@@ -36,10 +36,6 @@ func GetArticle(id int) (*Article, error) {
 	return &article, nil
 }
 
-func HasArticleByName(name string) (bool, error) {
-	return false, nil
-}
-
 func HasArticleByID(id int) (bool, error) {
 	var article Article
 	err := db.Select("id").Where("id = ? AND deleted_on = ?", id, 0).First(&article).Error
@@ -62,7 +58,7 @@ func GetArticlesCount(cond map[string]interface{}) (int, error) {
 }
 
 func AddArticle(data map[string]interface{}) error {
-	// 根据 data 参数构造 articel 结构体
+	// 根据 data 参数构造 article 结构体
 	article := Article{
 		TagID:   data["tag_id"].(int),
 		Title:   data["title"].(string),
