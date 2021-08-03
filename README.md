@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/gh/linehk/gin-blog/branch/master/graph/badge.svg)](https://codecov.io/gh/linehk/gin-blog)
 [![Go Report Card](https://goreportcard.com/badge/github.com/linehk/gin-blog)](https://goreportcard.com/report/github.com/linehk/gin-blog)
 
-English | [简体中文](./README.md "简体中文")
+English | [简体中文](./README-zh.md "简体中文")
 
 gin-blog is a simple blog RESTful API example that uses MySQL as the database.
 

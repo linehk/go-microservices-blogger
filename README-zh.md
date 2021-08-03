@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/gh/linehk/gin-blog/branch/master/graph/badge.svg)](https://codecov.io/gh/linehk/gin-blog)
 [![Go Report Card](https://goreportcard.com/badge/github.com/linehk/gin-blog)](https://goreportcard.com/report/github.com/linehk/gin-blog)
 
-[English](./README-en.md "English") | 简体中文
+[English](./README.md "English") | 简体中文
 
 gin-blog 是一个简单的博客 RESTful API 示例，使用 MySQL 作为数据库。
 
