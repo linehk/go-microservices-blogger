@@ -71,7 +71,7 @@ func (a *Article) HasID() (bool, error) {
 	return model.HasArticleByID(a.ID)
 }
 
-func (a *Article) Count() (int, error) {
+func (a *Article) Count() (int64, error) {
 	return model.GetArticlesCount(a.toMap())
 }
 

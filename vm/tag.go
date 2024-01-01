@@ -41,7 +41,7 @@ func (t *Tag) Delete() error {
 	return model.DeleteTag(t.ID)
 }
 
-func (t *Tag) Count() (int, error) {
+func (t *Tag) Count() (int64, error) {
 	return model.GetTagsCount(t.toMap())
 }
 

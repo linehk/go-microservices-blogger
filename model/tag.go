@@ -58,8 +58,8 @@ func HasTagByID(id int) (bool, error) {
 	return false, nil
 }
 
-func GetTagsCount(cond map[string]interface{}) (int, error) {
-	var count int
+func GetTagsCount(cond map[string]interface{}) (int64, error) {
+	var count int64
 	if err := db.Model(&Tag{}).Where(cond).Count(&count).Error; err != nil {
 		return 0, err
 	}

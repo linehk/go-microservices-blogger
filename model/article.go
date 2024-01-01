@@ -49,8 +49,8 @@ func HasArticleByID(id int) (bool, error) {
 	return false, nil
 }
 
-func GetArticlesCount(cond map[string]interface{}) (int, error) {
-	var count int
+func GetArticlesCount(cond map[string]interface{}) (int64, error) {
+	var count int64
 	if err := db.Model(&Article{}).Where(cond).Count(&count).Error; err != nil {
 		return 0, err
 	}
