@@ -19,18 +19,14 @@ type server struct {
 }
 
 type database struct {
-	Dialect      string
-	User         string
-	Password     string
-	Host         string
-	Name         string
-	Protocol     string
-	Charset      string
-	ParseTime    string
-	Loc          string
-	MaxIdleConns int
-	MaxOpenConns int
-	TablePrefix string
+	Dialect  string
+	Host     string
+	User     string
+	Password string
+	DBName   string
+	Port     string
+	SSLMode  string
+	TimeZone string
 }
 
 var Cfg config

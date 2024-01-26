@@ -1,7 +1,9 @@
 package model
 
 import (
-	"github.com/jinzhu/gorm"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 type Article struct {
@@ -16,10 +18,8 @@ type Article struct {
 
 func GetArticles(offset, limit int, cond map[string]interface{}) ([]*Article, error) {
 	var articles []*Article
-	// 预加载
-	// 根据 cond 多表查询
-	err := db.Preload("Tag").Where(cond).Offset(offset).Limit(limit).Find(&articles).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
+	err := db.Model(&Article{}).Preload("Tag").Where(cond).Offset(offset).Limit(limit).Find(&articles).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
 	return articles, nil
@@ -27,10 +27,8 @@ func GetArticles(offset, limit int, cond map[string]interface{}) ([]*Article, er
 
 func GetArticle(id int) (*Article, error) {
 	var article Article
-	// 预加载
-	// 多表查询
-	err := db.Preload("Tag").Where("id = ? AND deleted_on = ? ", id, 0).First(&article).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
+	err := db.Model(&Article{}).Preload("Tag").Where("id = ?", id).First(&article).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
 	return &article, nil
@@ -39,7 +37,7 @@ func GetArticle(id int) (*Article, error) {
 func HasArticleByID(id int) (bool, error) {
 	var article Article
 	err := db.Select("id").Where("id = ? AND deleted_on = ?", id, 0).First(&article).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return false, err
 	}
 	// id 为正数才表示存在

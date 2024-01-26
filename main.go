@@ -14,7 +14,6 @@ var sc = config.Cfg.Server
 
 func main() {
 	model.Setup()
-	defer model.Close()
 
 	server := &http.Server{
 		Addr:           sc.Addr,

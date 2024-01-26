@@ -77,7 +77,6 @@ func (a *Article) Count() (int64, error) {
 
 func (a *Article) toMap() map[string]interface{} {
 	m := make(map[string]interface{})
-	m["deleted_on"] = 0
 	if a.State != -1 {
 		m["state"] = a.State
 	}

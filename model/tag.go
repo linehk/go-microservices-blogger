@@ -1,7 +1,9 @@
 package model
 
 import (
-	"github.com/jinzhu/gorm"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 type Tag struct {
@@ -18,7 +20,7 @@ func GetTags(offset, limit int, cond map[string]interface{}) ([]Tag, error) {
 	} else {
 		err = db.Where(cond).Find(&tags).Error
 	}
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
 	return tags, nil
@@ -35,7 +37,7 @@ func GetTag(id int) (*Tag, error) {
 func HasTagByName(name string) (bool, error) {
 	var tag Tag
 	err := db.Select("id").Where("name = ? AND deleted_on = ?", name, 0).First(&tag).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return false, err
 	}
 	// id 为正数时才表示存在
@@ -48,7 +50,7 @@ func HasTagByName(name string) (bool, error) {
 func HasTagByID(id int) (bool, error) {
 	var tag Tag
 	err := db.Select("id").Where("id = ? AND deleted_on = ?", id, 0).First(&tag).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return false, err
 	}
 	// id 为正数时才表示存在
