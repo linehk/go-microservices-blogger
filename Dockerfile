@@ -21,7 +21,7 @@ FROM gcr.io/distroless/base-debian12 AS release
 WORKDIR /
 
 COPY --from=build /app /app
-COPY --from=build /workdir/config.toml /config.toml
+COPY --from=build /workdir/.env /.env
 
 EXPOSE 8080
 

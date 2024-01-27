@@ -3,41 +3,16 @@ package config
 import (
 	"log"
 
-	"github.com/BurntSushi/toml"
+	"github.com/knadh/koanf/parsers/dotenv"
+	"github.com/knadh/koanf/providers/file"
+	"github.com/knadh/koanf/v2"
 )
 
-type config struct {
-	Server   server
-	Database database
-}
+var Raw = koanf.New(".")
 
-type server struct {
-	Mode         string
-	Addr         string
-	ReadTimeout  int
-	WriteTimeout int
-}
-
-type database struct {
-	Dialect  string
-	Host     string
-	User     string
-	Password string
-	DBName   string
-	Port     string
-	SSLMode  string
-	TimeZone string
-}
-
-var Cfg config
-
-// init 初始化 Cfg 全局变量。
 func init() {
-	// ../config.toml 用于各个子目录。
-	if _, err := toml.DecodeFile("../config.toml", &Cfg); err != nil {
-		// ./config.toml 用于 main.go。
-		if _, err := toml.DecodeFile("./config.toml", &Cfg); err != nil {
-			log.Fatal(err)
-		}
+	err := Raw.Load(file.Provider(".env"), dotenv.Parser())
+	if err != nil {
+		log.Fatalf("error loading config: %v", err)
 	}
 }

@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/linehk/gin-blog/config"
-	"github.com/linehk/gin-blog/router/api/v1"
+	v1 "github.com/linehk/gin-blog/router/api/v1"
 )
 
 func Setup() *gin.Engine {
@@ -12,7 +12,7 @@ func Setup() *gin.Engine {
 	// 中间件
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	gin.SetMode(config.Cfg.Server.Mode)
+	gin.SetMode(config.Raw.String("MODE"))
 	apiv1 := r.Group("/api/v1")
 	{
 		// articles 路由

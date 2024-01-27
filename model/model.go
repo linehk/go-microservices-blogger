@@ -2,10 +2,11 @@ package model
 
 import (
 	"fmt"
+	"log"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"log"
 
 	"github.com/linehk/gin-blog/config"
 )
@@ -22,11 +23,11 @@ type Model struct {
 
 var db *gorm.DB
 
-var dbc = config.Cfg.Database
-
 func Setup() {
 	DSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		dbc.Host, dbc.User, dbc.Password, dbc.DBName, dbc.Port, dbc.SSLMode, dbc.TimeZone)
+		config.Raw.String("HOST"), config.Raw.String("POSTGRES_USER"), config.Raw.String("POSTGRES_PASSWORD"),
+		config.Raw.String("POSTGRES_DB"), config.Raw.String("PORT"), config.Raw.String("SSLMODE"),
+		config.Raw.String("TIMEZONE"))
 
 	db, err := gorm.Open(postgres.Open(DSN), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{

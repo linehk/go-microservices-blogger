@@ -9,10 +9,6 @@ services:
     container_name: postgresql
     networks:
       - app-net
-    environment:
-      POSTGRES_DB: gin_blog
-      POSTGRES_USER: gorm
-      POSTGRES_PASSWORD: gorm
     volumes:
       - ~/db/postgresql/data:/var/lib/postgresql/data
     ports:
