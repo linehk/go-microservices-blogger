@@ -1,0 +1,38 @@
+version: '3.8'
+
+networks:
+  app-net:
+
+services:
+  postgresql:
+    image: postgres:16
+    container_name: postgresql
+    networks:
+      - app-net
+    environment:
+      POSTGRES_DB: gin_blog
+      POSTGRES_USER: gorm
+      POSTGRES_PASSWORD: gorm
+    volumes:
+      - ~/db/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    container_name: redis
+    networks:
+      - app-net
+    ports:
+      - "6379:6379"
+
+  app-backend:
+    build: .
+    container_name: app-backend
+    networks:
+      - app-net
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresql
+      - redis
