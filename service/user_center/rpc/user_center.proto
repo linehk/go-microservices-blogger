@@ -3,14 +3,19 @@ syntax = "proto3";
 package user_center;
 option go_package="./user_center";
 
-message Request {
-  string ping = 1;
+message EmptyRequest {
 }
 
-message Response {
-  string pong = 1;
+message EmptyResponse {
+}
+
+message CreateUserRequest {
+  int64 id = 1;
+  string username = 2;
+  string password = 3;
+  string email = 4;
 }
 
 service User_center {
-  rpc Ping(Request) returns(Response);
+  rpc CreateUser(CreateUserRequest) returns (EmptyResponse);
 }
