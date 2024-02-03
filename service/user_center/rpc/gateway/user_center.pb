@@ -1,13 +1,9 @@
 
-¾
-)service/user_center/rpc/user_center.protouser_center"
-EmptyRequest"
-EmptyResponse"q
-CreateUserRequest
-id (Rid
-username (	Rusername
-password (	Rpassword
-email (	Remail2W
-User_centerH
-
-CreateUser.user_center.CreateUserRequest.user_center.EmptyResponseBZ./user_centerbproto3
+Ô
+)service/user_center/rpc/user_center.protouser_center"
+Request
+ping (	Rping"
+Response
+pong (	Rpong2B
+User_center3
+Ping.user_center.Request.user_center.ResponseBZ./user_centerbproto3
