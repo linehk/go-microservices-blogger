@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserCenter_Ping_FullMethodName = "/user_center.User_center/Ping"
+	UserCenter_CreateUser_FullMethodName = "/user_center.User_center/CreateUser"
 )
 
 // UserCenterClient is the client API for UserCenter service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserCenterClient interface {
-	Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
 }
 
 type userCenterClient struct {
@@ -37,9 +37,9 @@ func NewUserCenterClient(cc grpc.ClientConnInterface) UserCenterClient {
 	return &userCenterClient{cc}
 }
 
-func (c *userCenterClient) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, UserCenter_Ping_FullMethodName, in, out, opts...)
+func (c *userCenterClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
+	err := c.cc.Invoke(ctx, UserCenter_CreateUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *userCenterClient) Ping(ctx context.Context, in *Request, opts ...grpc.C
 // All implementations must embed UnimplementedUserCenterServer
 // for forward compatibility
 type UserCenterServer interface {
-	Ping(context.Context, *Request) (*Response, error)
+	CreateUser(context.Context, *CreateUserRequest) (*EmptyResponse, error)
 	mustEmbedUnimplementedUserCenterServer()
 }
 
@@ -58,8 +58,8 @@ type UserCenterServer interface {
 type UnimplementedUserCenterServer struct {
 }
 
-func (UnimplementedUserCenterServer) Ping(context.Context, *Request) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+func (UnimplementedUserCenterServer) CreateUser(context.Context, *CreateUserRequest) (*EmptyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
 func (UnimplementedUserCenterServer) mustEmbedUnimplementedUserCenterServer() {}
 
@@ -74,20 +74,20 @@ func RegisterUserCenterServer(s grpc.ServiceRegistrar, srv UserCenterServer) {
 	s.RegisterService(&UserCenter_ServiceDesc, srv)
 }
 
-func _UserCenter_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+func _UserCenter_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserCenterServer).Ping(ctx, in)
+		return srv.(UserCenterServer).CreateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserCenter_Ping_FullMethodName,
+		FullMethod: UserCenter_CreateUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserCenterServer).Ping(ctx, req.(*Request))
+		return srv.(UserCenterServer).CreateUser(ctx, req.(*CreateUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +100,8 @@ var UserCenter_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserCenterServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Ping",
-			Handler:    _UserCenter_Ping_Handler,
+			MethodName: "CreateUser",
+			Handler:    _UserCenter_CreateUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

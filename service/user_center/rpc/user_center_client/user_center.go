@@ -13,11 +13,12 @@ import (
 )
 
 type (
-	Request  = user_center.Request
-	Response = user_center.Response
+	CreateUserRequest = user_center.CreateUserRequest
+	EmptyRequest      = user_center.EmptyRequest
+	EmptyResponse     = user_center.EmptyResponse
 
 	UserCenter interface {
-		Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+		CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
 	}
 
 	defaultUserCenter struct {
@@ -31,7 +32,7 @@ func NewUserCenter(cli zrpc.Client) UserCenter {
 	}
 }
 
-func (m *defaultUserCenter) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultUserCenter) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
 	client := user_center.NewUserCenterClient(m.cli.Conn())
-	return client.Ping(ctx, in, opts...)
+	return client.CreateUser(ctx, in, opts...)
 }

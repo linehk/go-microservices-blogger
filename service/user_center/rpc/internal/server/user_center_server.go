@@ -22,7 +22,7 @@ func NewUserCenterServer(svcCtx *svc.ServiceContext) *UserCenterServer {
 	}
 }
 
-func (s *UserCenterServer) Ping(ctx context.Context, in *user_center.Request) (*user_center.Response, error) {
-	l := logic.NewPingLogic(ctx, s.svcCtx)
-	return l.Ping(in)
+func (s *UserCenterServer) CreateUser(ctx context.Context, in *user_center.CreateUserRequest) (*user_center.EmptyResponse, error) {
+	l := logic.NewCreateUserLogic(ctx, s.svcCtx)
+	return l.CreateUser(in)
 }
