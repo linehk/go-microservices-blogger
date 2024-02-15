@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package user;
+option go_package="./user";
+
+import "google/protobuf/timestamp.proto";
+import "service/blog/rpc/blog.proto";
+
+message EmptyReq {
+}
+
+message EmptyResp {
+}
+
+message User {
+  string kind = 1;
+  string id = 2;
+  google.protobuf.Timestamp created = 3;
+  string url = 4;
+  string selfLink = 5;
+  repeated blog.Blog blogs = 6;
+  string displayName = 7;
+  string about = 8;
+  Locale locale = 9;
+}
+
+message Locale {
+  string language = 1;
+  string country = 2;
+  string variant = 3;
+}
+
+message CreateUserReq {
+  User user = 1;
+}
+
+service User_center {
+  rpc CreateUser(CreateUserReq) returns (EmptyResp);
+}

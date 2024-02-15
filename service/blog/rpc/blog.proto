@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package blog;
+option go_package="./blog";
+
+message Blog {
+}
+
+service BlogService {
+}
