@@ -1,9 +1,0 @@
-Name: user_center-api
-Host: 0.0.0.0
-Port: 8888
-
-user_center:
-  Etcd:
-    Hosts:
-      - localhost:2379
-    Key: usercenter.rpc
