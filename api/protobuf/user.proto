@@ -4,7 +4,7 @@ package user;
 option go_package="./user";
 
 import "google/protobuf/timestamp.proto";
-import "service/blog/rpc/blog.proto";
+import "blog.proto";
 
 message User {
   string kind = 1;
