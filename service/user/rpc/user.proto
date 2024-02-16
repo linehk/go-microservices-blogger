@@ -6,12 +6,6 @@ option go_package="./user";
 import "google/protobuf/timestamp.proto";
 import "service/blog/rpc/blog.proto";
 
-message EmptyReq {
-}
-
-message EmptyResp {
-}
-
 message User {
   string kind = 1;
   string id = 2;
@@ -30,10 +24,13 @@ message Locale {
   string variant = 3;
 }
 
-message CreateUserReq {
+message GetReq {
   User user = 1;
 }
 
-service User_center {
-  rpc CreateUser(CreateUserReq) returns (EmptyResp);
+// use UserService will generate filepath like userservice
+// isn't best practice for Go naming
+// but only modify goctl can change the rule
+service UserService {
+  rpc Get(GetReq) returns (User);
 }
