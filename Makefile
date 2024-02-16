@@ -1,4 +1,4 @@
-.PHONY: proto
-proto:
-	@./script/proto.sh user
-	@./script/proto.sh blog
+.PHONY: pb
+pb:
+	@./script/pb.sh user
+	@./script/pb.sh blog
