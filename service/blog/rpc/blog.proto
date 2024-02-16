@@ -3,8 +3,26 @@ syntax = "proto3";
 package blog;
 option go_package="./blog";
 
+import "google/protobuf/timestamp.proto";
+
 message Blog {
+  string kind = 1;
+  string id = 2;
+  string name = 3;
+  string description = 4;
+  google.protobuf.Timestamp published = 5;
+  google.protobuf.Timestamp updated = 6;
+  string url = 7;
+  string selfLink = 8;
+}
+
+message GetReq {
+  string blogId = 1;
+  string postId = 2;
+  uint64 maxComments = 3;
+  string view = 4;
 }
 
 service BlogService {
+  rpc Get(GetReq) returns (Blog);
 }
