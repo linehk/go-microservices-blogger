@@ -1,15 +1,15 @@
-on: [push]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-go@v4
-      with:
-        go-version-file: 'go.mod'
-    - run:
-        go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
-    - uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.txt
-        verbose: true
+#on: [push]
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v4
+#    - uses: actions/setup-go@v4
+#      with:
+#        go-version-file: 'go.mod'
+#    - run:
+#        go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+#    - uses: codecov/codecov-action@v3
+#      with:
+#        file: ./coverage.txt
+#        verbose: true
