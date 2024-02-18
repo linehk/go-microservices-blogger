@@ -3,14 +3,175 @@ syntax = "proto3";
 package post;
 option go_package="./post";
 
-message Request {
-  string ping = 1;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message Post {
+  string kind = 1;
+  string id = 2;
+  Blog blog = 3;
+  google.protobuf.Timestamp published = 4;
+  google.protobuf.Timestamp updated = 5;
+  string url = 6;
+  string selfLink = 7;
+  string title = 8;
+  string titleLink = 9;
+  string content = 10;
+  repeated Image images = 11;
+  string customMetaData = 12;
+  Author author = 13;
+  Reply replies = 14;
+  repeated string labels = 15;
+  Location location = 16;
+  string status = 17;
 }
 
-message Response {
-  string pong = 1;
+message Reply {
+  int64 totalItems = 1;
+  string selfLink = 2;
+  repeated Comment items = 3;
 }
 
-service Post {
-  rpc Ping(Request) returns(Response);
+message Location {
+  string name = 1;
+  float lat = 2;
+  float lng = 3;
+  string span = 4;
+}
+
+// go-zero can't import other proto
+// https://go-zero.dev/docs/tutorials/proto/faq
+message Comment {
+  message InReplyTo {
+    string id = 1;
+  }
+  message Post {
+    string id = 1;
+  }
+  message Blog {
+    string id = 1;
+  }
+  string kind = 1;
+  string status = 2;
+  string id = 3;
+  // avoid loop ref
+  InReplyTo inReplyTo = 4;
+  Post post = 5;
+  Blog blog = 6;
+  google.protobuf.Timestamp published = 7;
+  google.protobuf.Timestamp updated = 8;
+  string selfLink = 9;
+  string content = 10;
+  Author author = 11;
+}
+
+message Blog {
+  string id = 3;
+}
+
+message Image {
+  string url = 1;
+}
+
+message Author {
+  string id = 1;
+  string displayName = 2;
+  string url = 3;
+  Image image = 4;
+}
+
+message ListReq {
+  string blogId = 1;
+  google.protobuf.Timestamp endDate = 2;
+  bool fetchBodies = 3;
+  bool fetchImages = 4;
+  string labels = 5;
+  uint64 maxResults = 6;
+  string orderBy = 7;
+  string sortOption = 8;
+  string pageToken = 9;
+  google.protobuf.Timestamp startDate = 10;
+  string status = 11;
+  string view = 12;
+}
+
+message ListResp {
+  string kind = 1;
+  string nextPageToken = 2;
+  repeated Post items = 3;
+}
+
+message GetReq {
+  string blogId = 1;
+  string postId = 2;
+  uint64 maxComments = 3;
+  string view = 4;
+}
+
+message SearchReq {
+  string blogId = 1;
+  string q = 2;
+  bool fetchBodies = 3;
+  string orderBy = 4;
+}
+
+message SearchResp {
+  string kind = 1;
+  string nextPageToken = 2;
+  repeated Post items = 3;
+}
+
+message InsertReq {
+  string blogId = 1;
+  bool isDraft = 2;
+  Post post = 3;
+}
+
+message DeleteReq {
+  string blogId = 1;
+  string postId = 2;
+  bool useTrash = 3;
+}
+
+message GetByPathReq {
+  string blogId = 1;
+  string path = 2;
+  uint64 maxComments = 3;
+  string view = 4;
+}
+
+message PatchReq {
+  string blogId = 1;
+  string postId = 2;
+  Post post = 3;
+}
+
+message UpdateReq {
+  string blogId = 1;
+  string postId = 2;
+  Post post = 4;
+}
+
+message PublishReq {
+  string blogId = 1;
+  string postId = 2;
+  google.protobuf.Timestamp publishDate = 3;
+}
+
+message RevertReq {
+  string blogId = 1;
+  string postId = 2;
+}
+
+service PostService {
+  rpc List(ListReq) returns(ListResp);
+  rpc Get(GetReq) returns(Post);
+  rpc Search(SearchReq) returns(SearchResp);
+  rpc Insert(InsertReq) returns(Post);
+  rpc Delete(DeleteReq) returns(google.protobuf.Empty);
+  rpc GetByPath(GetByPathReq) returns(google.protobuf.Empty);
+  rpc Patch(PatchReq) returns(Post);
+  rpc Update(UpdateReq) returns(Post);
+  rpc Publish(PublishReq) returns(Post);
+  rpc Revert(RevertReq) returns(Post);
 }
