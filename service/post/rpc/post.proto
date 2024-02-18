@@ -163,6 +163,47 @@ message RevertReq {
   string postId = 2;
 }
 
+message PostUserInfos {
+  string kind = 1;
+  Post post = 2;
+  PostUserInfo post_user_info = 3;
+}
+
+message PostUserInfo {
+  string kind = 1;
+  string userId = 2;
+  string blogId = 3;
+  string postId = 4;
+  bool hasEditAccess = 5;
+}
+
+message GetPostUserInfosReq {
+  string blogId = 1;
+  string postId = 2;
+  string userId = 3;
+  uint64 maxComments = 4;
+}
+
+message ListPostUserInfosReq {
+  string blogId = 1;
+  string userId = 2;
+  google.protobuf.Timestamp endDate = 3;
+  bool fetchBodies = 4;
+  string labels = 5;
+  uint64 maxResults = 6;
+  string orderBy = 7;
+  string pageToken = 8;
+  google.protobuf.Timestamp startDate = 9;
+  string status = 10;
+  string view = 11;
+}
+
+message ListPostUserInfosResp {
+  string kind = 1;
+  string nextPageToken = 2;
+  repeated PostUserInfos items = 3;
+}
+
 service PostService {
   rpc List(ListReq) returns(ListResp);
   rpc Get(GetReq) returns(Post);
@@ -174,4 +215,6 @@ service PostService {
   rpc Update(UpdateReq) returns(Post);
   rpc Publish(PublishReq) returns(Post);
   rpc Revert(RevertReq) returns(Post);
+  rpc GetPostUserInfos(GetPostUserInfosReq) returns(PostUserInfos);
+  rpc ListPostUserInfos(ListPostUserInfosReq) returns(ListPostUserInfosResp);
 }
