@@ -80,9 +80,26 @@ message BlogUserInfosReq {
   uint64 maxPosts = 3;
 }
 
+message PageViews {
+  string kind = 1;
+  int64 blogId = 2;
+  repeated Count counts = 3;
+}
+
+message Count {
+  string timeRange = 1;
+  uint64 count = 2;
+}
+
+message GetPageViewsReq {
+  string blogId = 1;
+  string range = 2;
+}
+
 service BlogService {
   rpc Get(GetReq) returns (Blog);
   rpc GetByUrl(GetByUrlReq) returns (Blog);
   rpc ListByUser(ListByUserReq) returns (ListByUserResp);
   rpc GetBlogUserInfos(BlogUserInfosReq) returns (BlogUserInfos);
+  rpc GetPageViews(GetPageViewsReq) returns (PageViews);
 }
