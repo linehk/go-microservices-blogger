@@ -26,3 +26,23 @@ func (s *BlogServiceServer) Get(ctx context.Context, in *blog.GetReq) (*blog.Blo
 	l := logic.NewGetLogic(ctx, s.svcCtx)
 	return l.Get(in)
 }
+
+func (s *BlogServiceServer) GetByUrl(ctx context.Context, in *blog.GetByUrlReq) (*blog.Blog, error) {
+	l := logic.NewGetByUrlLogic(ctx, s.svcCtx)
+	return l.GetByUrl(in)
+}
+
+func (s *BlogServiceServer) ListByUser(ctx context.Context, in *blog.ListByUserReq) (*blog.ListByUserResp, error) {
+	l := logic.NewListByUserLogic(ctx, s.svcCtx)
+	return l.ListByUser(in)
+}
+
+func (s *BlogServiceServer) GetBlogUserInfos(ctx context.Context, in *blog.BlogUserInfosReq) (*blog.BlogUserInfos, error) {
+	l := logic.NewGetBlogUserInfosLogic(ctx, s.svcCtx)
+	return l.GetBlogUserInfos(in)
+}
+
+func (s *BlogServiceServer) GetPageViews(ctx context.Context, in *blog.GetPageViewsReq) (*blog.PageViews, error) {
+	l := logic.NewGetPageViewsLogic(ctx, s.svcCtx)
+	return l.GetPageViews(in)
+}

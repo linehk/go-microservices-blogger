@@ -13,7 +13,7 @@ import (
 )
 
 type (
-	Blog   = user.Blog
+	Blogs  = user.Blogs
 	GetReq = user.GetReq
 	Locale = user.Locale
 	User   = user.User

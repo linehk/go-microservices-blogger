@@ -13,11 +13,28 @@ import (
 )
 
 type (
-	Blog   = blog.Blog
-	GetReq = blog.GetReq
+	Blog             = blog.Blog
+	BlogUserInfo     = blog.BlogUserInfo
+	BlogUserInfos    = blog.BlogUserInfos
+	BlogUserInfosReq = blog.BlogUserInfosReq
+	Count            = blog.Count
+	GetByUrlReq      = blog.GetByUrlReq
+	GetPageViewsReq  = blog.GetPageViewsReq
+	GetReq           = blog.GetReq
+	ListByUserReq    = blog.ListByUserReq
+	ListByUserResp   = blog.ListByUserResp
+	Locale           = blog.Locale
+	PageViews        = blog.PageViews
+	Pages            = blog.Pages
+	Posts            = blog.Posts
+	PostsItems       = blog.PostsItems
 
 	BlogService interface {
 		Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*Blog, error)
+		GetByUrl(ctx context.Context, in *GetByUrlReq, opts ...grpc.CallOption) (*Blog, error)
+		ListByUser(ctx context.Context, in *ListByUserReq, opts ...grpc.CallOption) (*ListByUserResp, error)
+		GetBlogUserInfos(ctx context.Context, in *BlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error)
+		GetPageViews(ctx context.Context, in *GetPageViewsReq, opts ...grpc.CallOption) (*PageViews, error)
 	}
 
 	defaultBlogService struct {
@@ -34,4 +51,24 @@ func NewBlogService(cli zrpc.Client) BlogService {
 func (m *defaultBlogService) Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*Blog, error) {
 	client := blog.NewBlogServiceClient(m.cli.Conn())
 	return client.Get(ctx, in, opts...)
+}
+
+func (m *defaultBlogService) GetByUrl(ctx context.Context, in *GetByUrlReq, opts ...grpc.CallOption) (*Blog, error) {
+	client := blog.NewBlogServiceClient(m.cli.Conn())
+	return client.GetByUrl(ctx, in, opts...)
+}
+
+func (m *defaultBlogService) ListByUser(ctx context.Context, in *ListByUserReq, opts ...grpc.CallOption) (*ListByUserResp, error) {
+	client := blog.NewBlogServiceClient(m.cli.Conn())
+	return client.ListByUser(ctx, in, opts...)
+}
+
+func (m *defaultBlogService) GetBlogUserInfos(ctx context.Context, in *BlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error) {
+	client := blog.NewBlogServiceClient(m.cli.Conn())
+	return client.GetBlogUserInfos(ctx, in, opts...)
+}
+
+func (m *defaultBlogService) GetPageViews(ctx context.Context, in *GetPageViewsReq, opts ...grpc.CallOption) (*PageViews, error) {
+	client := blog.NewBlogServiceClient(m.cli.Conn())
+	return client.GetPageViews(ctx, in, opts...)
 }

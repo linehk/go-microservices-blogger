@@ -2,6 +2,9 @@
 pb:
 	@./script/pb.sh user
 	@./script/pb.sh blog
+	@./script/pb.sh post
+	@./script/pb.sh page
+	@./script/pb.sh comment
 
 .PHONY: test
 test:
