@@ -40,5 +40,6 @@ func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 	if err != nil {
 		return nil, fmt.Errorf("copier.Copy err: %v", err)
 	}
+	respUser.Kind = "blogger#user"
 	return &respUser, nil
 }
