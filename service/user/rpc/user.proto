@@ -11,23 +11,14 @@ message User {
   google.protobuf.Timestamp created = 3;
   string url = 4;
   string selfLink = 5;
-  repeated Blog blogs = 6;
+  Blogs blogs = 6;
   string displayName = 7;
   string about = 8;
   Locale locale = 9;
 }
 
-// go-zero can't import other proto
-// https://go-zero.dev/docs/tutorials/proto/faq
-message Blog {
-  string kind = 1;
-  string id = 2;
-  string name = 3;
-  string description = 4;
-  google.protobuf.Timestamp published = 5;
-  google.protobuf.Timestamp updated = 6;
-  string url = 7;
-  string selfLink = 8;
+message Blogs {
+  string selfLink = 1;
 }
 
 message Locale {
