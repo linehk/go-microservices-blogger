@@ -3,14 +3,117 @@ syntax = "proto3";
 package comment;
 option go_package="./comment";
 
-message Request {
-  string ping = 1;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message Comment {
+  string kind = 1;
+  string status = 2;
+  string id = 3;
+  InReplyTo inReplyTo = 4;
+  Post post = 5;
+  Blog blog = 6;
+  google.protobuf.Timestamp published = 7;
+  google.protobuf.Timestamp updated = 8;
+  string selfLink = 9;
+  string content = 10;
+  Author author = 11;
 }
 
-message Response {
-  string pong = 1;
+message Author {
+  string id = 1;
+  string displayName = 2;
+  string url = 3;
+  Image image = 4;
 }
 
-service Comment {
-  rpc Ping(Request) returns(Response);
+message Image {
+  string url = 1;
+}
+
+message InReplyTo {
+  string id = 1;
+}
+
+message Post {
+  string id = 1;
+}
+
+message Blog {
+  string id = 1;
+}
+
+message ListReq {
+  string blogId = 1;
+  string postId = 2;
+  google.protobuf.Timestamp endDate = 3;
+  bool fetchBodies = 4;
+  uint64 maxResults = 5;
+  string pageToken = 6;
+  google.protobuf.Timestamp startDate = 7;
+  string status = 8;
+  string view = 9;
+}
+
+message ListResp {
+  string kind = 1;
+  string nextPageToken = 2;
+  string prevPageToken = 3;
+  repeated Comment items = 4;
+}
+
+message GetReq {
+  string blogId = 1;
+  string commentId = 2;
+  string postId = 3;
+}
+
+message ApproveReq {
+  string blogId = 1;
+  string commentId = 2;
+  string postId = 3;
+}
+
+message DeleteReq {
+  string blogId = 1;
+  string commentId = 2;
+  string postId = 3;
+}
+
+message ListByBlogReq {
+  string blogId = 1;
+  google.protobuf.Timestamp endDate = 2;
+  bool fetchBodies = 3;
+  uint64 maxResults = 4;
+  string pageToken = 5;
+  google.protobuf.Timestamp startDate = 6;
+}
+
+message ListByBlogResp {
+  string kind = 1;
+  string nextPageToken = 2;
+  string prevPageToken = 3;
+  repeated Comment items = 4;
+}
+
+message MarkAsSpamReq {
+  string blogId = 1;
+  string commentId = 2;
+  string postId = 3;
+}
+
+message RemoveContentReq {
+  string blogId = 1;
+  string commentId = 2;
+  string postId = 3;
+}
+
+service CommentService {
+  rpc List(ListReq) returns(ListResp);
+  rpc Get(GetReq) returns(Comment);
+  rpc Approve(ApproveReq) returns(Comment);
+  rpc Delete(DeleteReq) returns(google.protobuf.Empty);
+  rpc ListByBlog(ListByBlogReq) returns(ListByBlogResp);
+  rpc MarkAsSpam(MarkAsSpamReq) returns(Comment);
+  rpc RemoveContent(RemoveContentReq) returns(Comment);
 }
