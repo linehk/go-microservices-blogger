@@ -4,3 +4,7 @@ Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: user.rpc
+DB:
+  DataSource: postgresql://dev:dev@localhost:5432/go_blogger?sslmode=disable
+Cache:
+  - Host: localhost:6379

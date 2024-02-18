@@ -37,7 +37,7 @@ message Locale {
 }
 
 message GetReq {
-  User user = 1;
+  string userId = 1;
 }
 
 // use UserService will generate filepath like userservice
