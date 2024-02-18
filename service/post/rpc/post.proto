@@ -4,7 +4,6 @@ package post;
 option go_package="./post";
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 message Post {
   string kind = 1;
@@ -204,13 +203,15 @@ message ListPostUserInfosResp {
   repeated PostUserInfos items = 3;
 }
 
+message EmptyResp {}
+
 service PostService {
   rpc List(ListReq) returns(ListResp);
   rpc Get(GetReq) returns(Post);
   rpc Search(SearchReq) returns(SearchResp);
   rpc Insert(InsertReq) returns(Post);
-  rpc Delete(DeleteReq) returns(google.protobuf.Empty);
-  rpc GetByPath(GetByPathReq) returns(google.protobuf.Empty);
+  rpc Delete(DeleteReq) returns(EmptyResp);
+  rpc GetByPath(GetByPathReq) returns(EmptyResp);
   rpc Patch(PatchReq) returns(Post);
   rpc Update(UpdateReq) returns(Post);
   rpc Publish(PublishReq) returns(Post);

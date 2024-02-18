@@ -4,7 +4,6 @@ package comment;
 option go_package="./comment";
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 message Comment {
   string kind = 1;
@@ -108,11 +107,13 @@ message RemoveContentReq {
   string postId = 3;
 }
 
+message EmptyResp {}
+
 service CommentService {
   rpc List(ListReq) returns(ListResp);
   rpc Get(GetReq) returns(Comment);
   rpc Approve(ApproveReq) returns(Comment);
-  rpc Delete(DeleteReq) returns(google.protobuf.Empty);
+  rpc Delete(DeleteReq) returns(EmptyResp);
   rpc ListByBlog(ListByBlogReq) returns(ListByBlogResp);
   rpc MarkAsSpam(MarkAsSpamReq) returns(Comment);
   rpc RemoveContent(RemoveContentReq) returns(Comment);
