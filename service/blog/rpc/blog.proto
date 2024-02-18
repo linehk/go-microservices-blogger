@@ -14,15 +14,68 @@ message Blog {
   google.protobuf.Timestamp updated = 6;
   string url = 7;
   string selfLink = 8;
+  Posts posts = 9;
+  Pages pages = 10;
+  string customMetaData = 11;
+  PostsItems posts_items = 12;
+}
+
+message Posts {
+  string totalItems = 1;
+  string selfLink = 2;
+}
+
+message PostsItems {
+}
+
+message Pages {
+  string totalItems = 1;
+  string selfLink = 2;
+}
+
+message Locale {
+  string language = 1;
+  string country = 2;
+  string variant = 3;
 }
 
 message GetReq {
   string blogId = 1;
-  string postId = 2;
-  uint64 maxComments = 3;
-  string view = 4;
+  uint64 maxPosts = 2;
+}
+
+message GetByUrlReq {
+  string url = 1;
+}
+
+message ListByUserReq {
+  string userId = 1;
+  bool fetchUserInfo = 2;
+  string view = 3;
+}
+
+message ListByUserResp {
+  string kind = 1;
+  repeated Blog items = 2;
+  repeated BlogUserInfos blogUserInfos = 3;
+}
+
+message BlogUserInfos {
+  string kind = 1;
+  Blog blog = 2;
+  BlogUserInfo blog_user_info = 3;
+}
+
+message BlogUserInfo {
+  string kind = 1;
+  string userId = 2;
+  string blogId = 3;
+  string photosAlbumKey = 4;
+  bool hasAdminAccess = 5;
 }
 
 service BlogService {
   rpc Get(GetReq) returns (Blog);
+  rpc GetByUrl(GetByUrlReq) returns (Blog);
+  rpc ListByUser(ListByUserReq) returns (ListByUserResp);
 }
