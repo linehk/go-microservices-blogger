@@ -33,12 +33,6 @@ message Pages {
   string selfLink = 2;
 }
 
-message Locale {
-  string language = 1;
-  string country = 2;
-  string variant = 3;
-}
-
 message GetReq {
   string blogId = 1;
   uint64 maxPosts = 2;

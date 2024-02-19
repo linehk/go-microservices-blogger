@@ -23,7 +23,6 @@ type (
 	GetReq           = blog.GetReq
 	ListByUserReq    = blog.ListByUserReq
 	ListByUserResp   = blog.ListByUserResp
-	Locale           = blog.Locale
 	PageViews        = blog.PageViews
 	Pages            = blog.Pages
 	Posts            = blog.Posts
