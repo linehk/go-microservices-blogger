@@ -12,4 +12,20 @@ test:
 	
 .PHONY: model
 model:
-	@./script/model.sh user
+	@./script/model.sh user app_user
+	@./script/model.sh user locale
+
+	@./script/model.sh blog blog
+	@./script/model.sh blog blog_user_info
+	@./script/model.sh blog page_views
+
+	@./script/model.sh post post
+	@./script/model.sh post location
+	@./script/model.sh post label
+	@./script/model.sh post image
+	@./script/model.sh post post_user_info
+	@./script/model.sh post author
+
+	@./script/model.sh page page
+
+	@./script/model.sh comment comment 
