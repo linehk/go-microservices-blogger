@@ -2,8 +2,8 @@
 
 set -e
 
-service_name="$1"
-table_name="$2"
+readonly service_name="$1"
+readonly table_name="$2"
 
 goctl model pg datasource \
     --url="postgresql://dev:dev@localhost:5432/go_blogger?sslmode=disable" \

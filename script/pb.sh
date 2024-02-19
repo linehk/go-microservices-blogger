@@ -2,11 +2,11 @@
 
 set -e
 
-readonly name="$1"
+readonly service_name="$1"
 
 goctl rpc protoc \
-		./service/"$name"/rpc/"$name".proto \
-		--go_out=./service/"$name"/rpc/ \
-		--go-grpc_out=./service/"$name"/rpc/ \
-		--zrpc_out=./service/"$name"/rpc/ \
+		./service/"$service_name"/rpc/"$service_name".proto \
+		--go_out=./service/"$service_name"/rpc/ \
+		--go-grpc_out=./service/"$service_name"/rpc/ \
+		--zrpc_out=./service/"$service_name"/rpc/ \
 		-style go_zero
