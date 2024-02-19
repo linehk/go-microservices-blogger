@@ -47,9 +47,6 @@ type (
 		SelfLink    sql.NullString `db:"self_link"`
 		DisplayName sql.NullString `db:"display_name"`
 		About       sql.NullString `db:"about"`
-		Language    sql.NullString `db:"language"`
-		Country     sql.NullString `db:"country"`
-		Variant     sql.NullString `db:"variant"`
 	}
 )
 
@@ -116,8 +113,8 @@ func (m *defaultAppUserModel) Insert(ctx context.Context, data *AppUser) (sql.Re
 	publicAppUserIdKey := fmt.Sprintf("%s%v", cachePublicAppUserIdPrefix, data.Id)
 	publicAppUserUuidKey := fmt.Sprintf("%s%v", cachePublicAppUserUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)", m.table, appUserRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.Uuid, data.Created, data.Url, data.SelfLink, data.DisplayName, data.About, data.Language, data.Country, data.Variant)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6)", m.table, appUserRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.Uuid, data.Created, data.Url, data.SelfLink, data.DisplayName, data.About)
 	}, publicAppUserIdKey, publicAppUserUuidKey)
 	return ret, err
 }
@@ -132,7 +129,7 @@ func (m *defaultAppUserModel) Update(ctx context.Context, newData *AppUser) erro
 	publicAppUserUuidKey := fmt.Sprintf("%s%v", cachePublicAppUserUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, appUserRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.Created, newData.Url, newData.SelfLink, newData.DisplayName, newData.About, newData.Language, newData.Country, newData.Variant)
+		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.Created, newData.Url, newData.SelfLink, newData.DisplayName, newData.About)
 	}, publicAppUserIdKey, publicAppUserUuidKey)
 	return err
 }
