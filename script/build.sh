@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -e
 
 for service_name in user blog post page comment
