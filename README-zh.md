@@ -1,44 +1,27 @@
-# gin-blog
+# go-microservices-blogger
 
-[![codecov](https://codecov.io/gh/linehk/gin-blog/branch/master/graph/badge.svg)](https://codecov.io/gh/linehk/gin-blog)
-[![Go Report Card](https://goreportcard.com/badge/github.com/linehk/gin-blog)](https://goreportcard.com/report/github.com/linehk/gin-blog)
+[![codecov](https://codecov.io/gh/linehk/go-microservices-blogger/graph/badge.svg?token=eKiZDX7JQ5)](https://codecov.io/gh/linehk/go-microservices-blogger)
+[![Go Report Card](https://goreportcard.com/badge/github.com/linehk/go-microservices-blogger)](https://goreportcard.com/report/github.com/linehk/go-microservices-blogger)
 
 [English](./README.md "English") | 简体中文
 
-gin-blog 是一个简单的博客 RESTful API 示例，使用 MySQL 作为数据库。
+go-microservices-blogger 是微服务版本的 google blogger API。
+
+灵感来自 [Google Blogger API Docs](https://developers.google.com/blogger/docs/3.0/reference/ "Google Blogger API Docs")。
 
 ## 安装
 
 ```bash
-git clone https://github.com/linehk/gin-blog.git
+git clone https://github.com/linehk/go-microservices-blogger.git
 ```
 
-然后进行编译：
+然后运行：
 
 ```bash
-go build -o gin-blog
-```
-
-再运行：
-
-```bash
-./gin-blog
+docker-compose up -d
 ```
 
 ## 使用
-
-* 文章
-  * 获取指定文章：GET `http://localhost:8888/api/v1/articles/1`
-  * 获取全部文章：GET `http://localhost:8888/api/v1/articles`
-  * 新增文章：POST `http://localhost:8888/api/v1/articles`，表单可用 `form-data` 或 `x-www-form-urlencoded` 形式
-  * 修改文章：PUT `http://localhost:8888/api/v1/articles/1`
-  * 删除文章：DELETE `http://localhost:8888/api/v1/articles/1`
-* 标签
-  * 获取指定标签：GET `http://localhost:8888/api/v1/tags/1`
-  * 获取全部标签：GET `http://localhost:8888/api/v1/tags`
-  * 新增标签：POST `http://localhost:8888/api/v1/tags`
-  * 修改标签：PUT `http://localhost:8888/api/v1/tags/1`
-  * 删除标签：DELETE `http://localhost:8888/api/v1/tags/1`
 
 ## 参与贡献
 

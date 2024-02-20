@@ -1,45 +1,27 @@
-# gin-blog
+# go-microservices-blogger
 
-[![codecov](https://codecov.io/gh/linehk/gin-blog/branch/master/graph/badge.svg)](https://codecov.io/gh/linehk/gin-blog)
-[![Go Report Card](https://goreportcard.com/badge/github.com/linehk/gin-blog)](https://goreportcard.com/report/github.com/linehk/gin-blog)
+[![codecov](https://codecov.io/gh/linehk/go-microservices-blogger/graph/badge.svg?token=eKiZDX7JQ5)](https://codecov.io/gh/linehk/go-microservices-blogger)
+[![Go Report Card](https://goreportcard.com/badge/github.com/linehk/go-microservices-blogger)](https://goreportcard.com/report/github.com/linehk/go-microservices-blogger)
 
 English | [简体中文](./README-zh.md "简体中文")
 
-gin-blog is a simple blog RESTful API example that uses MySQL as the database.
+go-microservices-blogger is a microservices version google blogger API.
+
+Inspire by [Google Blogger API Docs](https://developers.google.com/blogger/docs/3.0/reference/ "Google Blogger API Docs").
 
 ## Installation
 
 ```bash
-git clone https://github.com/linehk/gin-blog.git
+git clone https://github.com/linehk/go-microservices-blogger.git
 ```
 
-Then, build it:
+Then, run it:
 
 ```bash
-go build -o gin-blog
-```
-
-And, run it:
-
-```bash
-./gin-blog
+docker-compose up -d
 ```
 
 ## Usages
-
-* Article
-  * get article: GET `http://localhost:8888/api/v1/articles/1`
-  * get all article: GET `http://localhost:8888/api/v1/articles`
-  * new article: POST `http://localhost:8888/api/v1/articles`, form allow to use `form-data` or `x-www-form-urlencoded` format
-  * edit article: PUT `http://localhost:8888/api/v1/articles/1`
-  * delete article: DELETE `http://localhost:8888/api/v1/articles/1`
-
-* Tag
-  * get tag: GET `http://localhost:8888/api/v1/tags/1`
-  * get all tag: GET `http://localhost:8888/api/v1/tags`
-  * new tag: POST `http://localhost:8888/api/v1/tags`
-  * edit tag: PUT `http://localhost:8888/api/v1/tags/1`
-  * delete tag: DELETE `http://localhost:8888/api/v1/tags/1`
 
 ## Contributing
 
