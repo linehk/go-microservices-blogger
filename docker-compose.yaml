@@ -1,0 +1,112 @@
+version: '3.8'
+
+networks:
+  app-net:
+
+services:
+  postgresql:
+    image: postgres:16.2
+    container_name: postgresql
+    networks:
+      - app-net
+    environment:
+      POSTGRES_DB: go_blogger
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+    volumes:
+      - ~/db/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7.2.4
+    container_name: redis
+    networks:
+      - app-net
+    ports:
+      - "6379:6379"
+
+  user-service:
+    build:
+      context: .
+      dockerfile: ./docker/user.Dockerfile
+    container_name: user-service
+    networks:
+      - app-net
+    ports:
+      - "10000:10000"
+    depends_on:
+      - postgresql
+      - redis
+      - etcd-single
+
+  blog-service:
+    build:
+      context: .
+      dockerfile: ./docker/user.Dockerfile
+    container_name: blog-service
+    networks:
+      - app-net
+    ports:
+      - "10001:10001"
+    depends_on:
+      - postgresql
+      - redis
+      - etcd-single
+  post-service:
+    build:
+      context: .
+      dockerfile: ./docker/post.Dockerfile
+    container_name: post-service
+    networks:
+      - app-net
+    ports:
+      - "10002:10002"
+    depends_on:
+      - postgresql
+      - redis
+      - etcd-single
+
+  page-service:
+    build:
+      context: .
+      dockerfile: ./docker/page.Dockerfile
+    container_name: page-service
+    networks:
+      - app-net
+    ports:
+      - "10003:10003"
+    depends_on:
+      - postgresql
+      - redis
+      - etcd-single
+
+  comment-service:
+    build:
+      context: .
+      dockerfile: ./docker/comment.Dockerfile
+    container_name: comment-service
+    networks:
+      - app-net
+    ports:
+      - "10004:10004"
+    depends_on:
+      - postgresql
+      - redis
+      - etcd-single
+
+  etcd-single:
+    image: quay.io/coreos/etcd:v3.5.12
+    container_name: etcd-single
+    networks:
+      - app-net
+    entrypoint: ["/usr/local/bin/etcd", "--config-file", "/etcd/single/conf/etcd.yaml"]
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    environment:
+      ETCDCTL_API: 3
+    volumes:
+      - type: bind
+        source: $HOME/db/etcd/single/
+        target: /etcd/single/
