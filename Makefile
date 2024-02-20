@@ -9,7 +9,3 @@ test:
 .PHONY: model
 model:
 	@./script/model.sh
-
-.PHONY: start
-start:
-	@./script/start.sh
