@@ -28,18 +28,20 @@ func NewGetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetLogic {
 }
 
 func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
-	appUser, err := l.svcCtx.AppUserModel.FindOneByUuid(l.ctx, in.UserId)
-	if err != nil && errors.Is(err, model.ErrNotFound) {
-		return nil, fmt.Errorf("FindOneByUuid NotFound err: %v", err)
+	appUserModel, err := l.svcCtx.AppUserModel.FindOneByUuid(l.ctx, in.GetUserId())
+	if errors.Is(err, model.ErrNotFound) {
+		return nil, fmt.Errorf("AppUserModel.FindOneByUuid NotFound err: %v", err)
 	}
-	if appUser == nil {
-		return nil, fmt.Errorf("FindOneByUuid NotExists err: %v", err)
+	if err != nil {
+		return nil, fmt.Errorf("AppUserModel.FindOneByUuid err: %v", err)
 	}
-	var respUser user.User
-	err = copier.Copy(&respUser, appUser)
+
+	var userResp user.User
+	err = copier.Copy(&userResp, appUserModel)
 	if err != nil {
 		return nil, fmt.Errorf("copier.Copy err: %v", err)
 	}
-	respUser.Kind = "blogger#user"
-	return &respUser, nil
+	userResp.Kind = "blogger#user"
+
+	return &userResp, nil
 }
