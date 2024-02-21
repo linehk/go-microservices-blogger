@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/copier"
-	"github.com/linehk/go-blogger/service/blog/rpc/blog"
-	"github.com/linehk/go-blogger/service/blog/rpc/internal/svc"
-	"github.com/linehk/go-blogger/service/blog/rpc/model"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/blog"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/internal/svc"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

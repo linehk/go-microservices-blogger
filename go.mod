@@ -1,4 +1,4 @@
-module github.com/linehk/go-blogger
+module github.com/linehk/go-microservices-blogger
 
 go 1.22.0
 

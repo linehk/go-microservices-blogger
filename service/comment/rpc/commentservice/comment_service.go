@@ -6,7 +6,7 @@ package commentservice
 import (
 	"context"
 
-	"github.com/linehk/go-blogger/service/comment/rpc/comment"
+	"github.com/linehk/go-microservices-blogger/service/comment/rpc/comment"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

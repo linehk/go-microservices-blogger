@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 
-	"github.com/linehk/go-blogger/service/blog/rpc/blog"
-	"github.com/linehk/go-blogger/service/blog/rpc/internal/svc"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/blog"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -1,8 +1,8 @@
 package svc
 
 import (
-	"github.com/linehk/go-blogger/service/blog/rpc/internal/config"
-	"github.com/linehk/go-blogger/service/blog/rpc/model"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/internal/config"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/model"
 	"github.com/zeromicro/go-zero/core/stores/postgres"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 )

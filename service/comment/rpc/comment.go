@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/linehk/go-blogger/service/comment/rpc/comment"
-	"github.com/linehk/go-blogger/service/comment/rpc/internal/config"
-	"github.com/linehk/go-blogger/service/comment/rpc/internal/server"
-	"github.com/linehk/go-blogger/service/comment/rpc/internal/svc"
+	"github.com/linehk/go-microservices-blogger/service/comment/rpc/comment"
+	"github.com/linehk/go-microservices-blogger/service/comment/rpc/internal/config"
+	"github.com/linehk/go-microservices-blogger/service/comment/rpc/internal/server"
+	"github.com/linehk/go-microservices-blogger/service/comment/rpc/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"

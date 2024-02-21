@@ -6,7 +6,7 @@ package pageservice
 import (
 	"context"
 
-	"github.com/linehk/go-blogger/service/page/rpc/page"
+	"github.com/linehk/go-microservices-blogger/service/page/rpc/page"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

@@ -6,7 +6,7 @@ package userservice
 import (
 	"context"
 
-	"github.com/linehk/go-blogger/service/user/rpc/user"
+	"github.com/linehk/go-microservices-blogger/service/user/rpc/user"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

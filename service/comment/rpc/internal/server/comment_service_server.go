@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"github.com/linehk/go-blogger/service/comment/rpc/comment"
-	"github.com/linehk/go-blogger/service/comment/rpc/internal/logic"
-	"github.com/linehk/go-blogger/service/comment/rpc/internal/svc"
+	"github.com/linehk/go-microservices-blogger/service/comment/rpc/comment"
+	"github.com/linehk/go-microservices-blogger/service/comment/rpc/internal/logic"
+	"github.com/linehk/go-microservices-blogger/service/comment/rpc/internal/svc"
 )
 
 type CommentServiceServer struct {

@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"github.com/linehk/go-blogger/service/blog/rpc/blog"
-	"github.com/linehk/go-blogger/service/blog/rpc/internal/logic"
-	"github.com/linehk/go-blogger/service/blog/rpc/internal/svc"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/blog"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/internal/logic"
+	"github.com/linehk/go-microservices-blogger/service/blog/rpc/internal/svc"
 )
 
 type BlogServiceServer struct {

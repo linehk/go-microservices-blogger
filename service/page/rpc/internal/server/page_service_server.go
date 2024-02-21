@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"github.com/linehk/go-blogger/service/page/rpc/internal/logic"
-	"github.com/linehk/go-blogger/service/page/rpc/internal/svc"
-	"github.com/linehk/go-blogger/service/page/rpc/page"
+	"github.com/linehk/go-microservices-blogger/service/page/rpc/internal/logic"
+	"github.com/linehk/go-microservices-blogger/service/page/rpc/internal/svc"
+	"github.com/linehk/go-microservices-blogger/service/page/rpc/page"
 )
 
 type PageServiceServer struct {
