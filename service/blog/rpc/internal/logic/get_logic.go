@@ -36,12 +36,12 @@ func (l *GetLogic) Get(in *blog.GetReq) (*blog.Blog, error) {
 		return nil, fmt.Errorf("BlogModel.FindOneByUuid err: %v", err)
 	}
 
-	var respBlog blog.Blog
-	err = copier.Copy(&respBlog, blogModel)
+	var blogResp blog.Blog
+	err = copier.Copy(&blogResp, blogModel)
 	if err != nil {
 		return nil, fmt.Errorf("copier.Copy err: %v", err)
 	}
-	respBlog.Kind = "blogger#blog"
+	blogResp.Kind = "blogger#blog"
 
-	return &respBlog, nil
+	return &blogResp, nil
 }
