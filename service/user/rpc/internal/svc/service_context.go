@@ -11,6 +11,7 @@ type ServiceContext struct {
 	Config       config.Config
 	RedisClient  *redis.Redis
 	AppUserModel model.AppUserModel
+	LocaleModel  model.LocaleModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -22,5 +23,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Type: redis.NodeType,
 		}),
 		AppUserModel: model.NewAppUserModel(conn, c.Cache),
+		LocaleModel:  model.NewLocaleModel(conn, c.Cache),
 	}
 }
