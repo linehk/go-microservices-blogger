@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/copier"
+	"github.com/linehk/go-blogger/service/blog/rpc/blog"
 	"github.com/linehk/go-blogger/service/user/rpc/internal/svc"
 	"github.com/linehk/go-blogger/service/user/rpc/model"
 	"github.com/linehk/go-blogger/service/user/rpc/user"
@@ -41,7 +42,32 @@ func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 	if err != nil {
 		return nil, fmt.Errorf("copier.Copy err: %v", err)
 	}
+	userResp.Id = appUserModel.Uuid
 	userResp.Kind = "blogger#user"
+
+	localeModel, err := l.svcCtx.LocaleModel.FindOneByAppUserUuid(l.ctx, in.GetUserId())
+	if errors.Is(err, model.ErrNotFound) {
+		return nil, fmt.Errorf("LocaleModel.FindOneByAppUserUuid NotFound err: %v", err)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("LocaleModel.FindOneByAppUserUuid err: %v", err)
+	}
+
+	err = copier.Copy(&userResp.Locale, localeModel)
+	if err != nil {
+		return nil, fmt.Errorf("copier.Copy err: %v", err)
+	}
+
+	listByUserReq := &blog.ListByUserReq{
+		UserId: in.GetUserId(),
+	}
+	listByUserResp, err := l.svcCtx.BlogService.ListByUser(l.ctx, listByUserReq)
+	if err != nil {
+		return nil, fmt.Errorf("BlogService.ListByUser err: %v", err)
+	}
+	for i, blogItem := range listByUserResp.GetItems() {
+		userResp.Blogs[i].SelfLink = blogItem.GetSelfLink()
+	}
 
 	return &userResp, nil
 }
