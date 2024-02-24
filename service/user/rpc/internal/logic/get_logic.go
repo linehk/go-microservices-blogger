@@ -31,31 +31,43 @@ func NewGetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetLogic {
 func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 	appUserModel, err := l.svcCtx.AppUserModel.FindOneByUuid(l.ctx, in.GetUserId())
 	if errors.Is(err, model.ErrNotFound) {
-		return nil, fmt.Errorf("AppUserModel.FindOneByUuid NotFound err: %v", err)
+		wrapErr := fmt.Errorf("AppUserModel.FindOneByUuid NotFound err: %v", err)
+		l.Error(wrapErr)
+		return nil, wrapErr
 	}
 	if err != nil {
-		return nil, fmt.Errorf("AppUserModel.FindOneByUuid err: %v", err)
+		wrapErr := fmt.Errorf("AppUserModel.FindOneByUuid err: %v", err)
+		l.Error(wrapErr)
+		return nil, wrapErr
 	}
 
 	var userResp user.User
 	err = copier.Copy(&userResp, appUserModel)
 	if err != nil {
-		return nil, fmt.Errorf("copier.Copy err: %v", err)
+		wrapErr := fmt.Errorf("copier.Copy err: %v", err)
+		l.Error(wrapErr)
+		return nil, wrapErr
 	}
 	userResp.Id = appUserModel.Uuid
 	userResp.Kind = "blogger#user"
 
 	localeModel, err := l.svcCtx.LocaleModel.FindOneByAppUserUuid(l.ctx, in.GetUserId())
 	if errors.Is(err, model.ErrNotFound) {
-		return nil, fmt.Errorf("LocaleModel.FindOneByAppUserUuid NotFound err: %v", err)
+		wrapErr := fmt.Errorf("LocaleModel.FindOneByAppUserUuid NotFound err: %v", err)
+		l.Error(wrapErr)
+		return nil, wrapErr
 	}
 	if err != nil {
-		return nil, fmt.Errorf("LocaleModel.FindOneByAppUserUuid err: %v", err)
+		wrapErr := fmt.Errorf("LocaleModel.FindOneByAppUserUuid err: %v", err)
+		l.Error(wrapErr)
+		return nil, wrapErr
 	}
 
 	err = copier.Copy(&userResp.Locale, localeModel)
 	if err != nil {
-		return nil, fmt.Errorf("copier.Copy err: %v", err)
+		wrapErr := fmt.Errorf("copier.Copy err: %v", err)
+		l.Error(wrapErr)
+		return nil, wrapErr
 	}
 
 	listByUserReq := &blog.ListByUserReq{
@@ -63,7 +75,9 @@ func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 	}
 	listByUserResp, err := l.svcCtx.BlogService.ListByUser(l.ctx, listByUserReq)
 	if err != nil {
-		return nil, fmt.Errorf("BlogService.ListByUser err: %v", err)
+		wrapErr := fmt.Errorf("BlogService.ListByUser err: %v", err)
+		l.Error(wrapErr)
+		return nil, wrapErr
 	}
 	for i, blogItem := range listByUserResp.GetItems() {
 		userResp.Blogs[i].SelfLink = blogItem.GetSelfLink()
