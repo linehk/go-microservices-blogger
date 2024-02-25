@@ -1,0 +1,14 @@
+Name: user.rpc
+ListenOn: 0.0.0.0:10000
+Etcd:
+  Hosts:
+  - localhost:2379
+  Key: user.rpc
+DB:
+  DataSource: postgresql://dev:dev@localhost:5432/go_blogger?sslmode=disable
+Cache:
+  - Host: localhost:6379
+BlogConf:
+  Endpoints:
+    - localhost:10001
+  NonBlock: true
