@@ -43,7 +43,7 @@ services:
   blog-service:
     build:
       context: .
-      dockerfile: ./docker/user.Dockerfile
+      dockerfile: ./docker/blog.Dockerfile
     container_name: blog-service
     networks:
       - app-net
@@ -53,6 +53,7 @@ services:
       - postgresql
       - redis
       - etcd-single
+
   post-service:
     build:
       context: .
