@@ -3,9 +3,9 @@ package logic
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/jinzhu/copier"
+	"github.com/linehk/go-microservices-blogger/errcode"
 	"github.com/linehk/go-microservices-blogger/service/blog/rpc/blog"
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/internal/svc"
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/model"
@@ -31,43 +31,37 @@ func NewGetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetLogic {
 func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 	appUserModel, err := l.svcCtx.AppUserModel.FindOneByUuid(l.ctx, in.GetUserId())
 	if errors.Is(err, model.ErrNotFound) {
-		wrapErr := fmt.Errorf("AppUserModel.FindOneByUuid NotFound err: %v", err)
-		l.Error(wrapErr)
-		return nil, wrapErr
+		l.Error(errcode.Msg(errcode.UserNotExist))
+		return nil, errcode.Wrap(errcode.UserNotExist)
 	}
 	if err != nil {
-		wrapErr := fmt.Errorf("AppUserModel.FindOneByUuid err: %v", err)
-		l.Error(wrapErr)
-		return nil, wrapErr
+		l.Error(errcode.Msg(errcode.Database))
+		return nil, errcode.Wrap(errcode.Database)
 	}
 
 	var userResp user.User
 	err = copier.Copy(&userResp, appUserModel)
 	if err != nil {
-		wrapErr := fmt.Errorf("copier.Copy err: %v", err)
-		l.Error(wrapErr)
-		return nil, wrapErr
+		l.Error(errcode.Msg(errcode.Convert))
+		return nil, errcode.Wrap(errcode.Convert)
 	}
 	userResp.Id = appUserModel.Uuid
 	userResp.Kind = "blogger#user"
 
 	localeModel, err := l.svcCtx.LocaleModel.FindOneByAppUserUuid(l.ctx, in.GetUserId())
 	if errors.Is(err, model.ErrNotFound) {
-		wrapErr := fmt.Errorf("LocaleModel.FindOneByAppUserUuid NotFound err: %v", err)
-		l.Error(wrapErr)
-		return nil, wrapErr
+		l.Error(errcode.Msg(errcode.LocaleNotExist))
+		return nil, errcode.Wrap(errcode.LocaleNotExist)
 	}
 	if err != nil {
-		wrapErr := fmt.Errorf("LocaleModel.FindOneByAppUserUuid err: %v", err)
-		l.Error(wrapErr)
-		return nil, wrapErr
+		l.Error(errcode.Msg(errcode.Database))
+		return nil, errcode.Wrap(errcode.Database)
 	}
 
 	err = copier.Copy(&userResp.Locale, localeModel)
 	if err != nil {
-		wrapErr := fmt.Errorf("copier.Copy err: %v", err)
-		l.Error(wrapErr)
-		return nil, wrapErr
+		l.Error(errcode.Msg(errcode.Convert))
+		return nil, errcode.Wrap(errcode.Convert)
 	}
 
 	listByUserReq := &blog.ListByUserReq{
@@ -75,9 +69,8 @@ func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 	}
 	listByUserResp, err := l.svcCtx.BlogService.ListByUser(l.ctx, listByUserReq)
 	if err != nil {
-		wrapErr := fmt.Errorf("BlogService.ListByUser err: %v", err)
-		l.Error(wrapErr)
-		return nil, wrapErr
+		l.Error(errcode.Msg(errcode.Service))
+		return nil, errcode.Wrap(errcode.Service)
 	}
 	for i, blogItem := range listByUserResp.GetItems() {
 		userResp.Blogs[i].SelfLink = blogItem.GetSelfLink()
