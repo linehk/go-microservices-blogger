@@ -2,11 +2,13 @@ package test
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"flag"
 	"log"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/linehk/go-microservices-blogger/errcode"
@@ -16,6 +18,7 @@ import (
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/internal/svc"
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/model"
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/user"
+	"github.com/stretchr/testify/require"
 	"github.com/zeromicro/go-zero/core/conf"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc"
@@ -105,27 +108,71 @@ func IntegrationTestGet(t *testing.T) {
 	}
 }
 
-func newCtrl(t *testing.T) (*gomock.Controller, *model.MockAppUserModel, context.Context, *logic.GetLogic) {
+func newCtrl(t *testing.T) (
+	*gomock.Controller,
+	context.Context,
+	*logic.GetLogic,
+	*model.MockAppUserModel,
+	*model.MockLocaleModel) {
+
 	ctrl := gomock.NewController(t)
-	repo := model.NewMockAppUserModel(ctrl)
 	ctx := context.Background()
+	appUserRepo := model.NewMockAppUserModel(ctrl)
+	localeRepo := model.NewMockLocaleModel(ctrl)
 	logicService := logic.NewGetLogic(ctx, &svc.ServiceContext{
-		AppUserModel: repo,
+		AppUserModel: appUserRepo,
+		LocaleModel:  localeRepo,
 	})
-	return ctrl, repo, ctx, logicService
+	return ctrl, ctx, logicService, appUserRepo, localeRepo
 }
 
 func TestGetUserNotExist(t *testing.T) {
-	ctrl, repo, ctx, logicService := newCtrl(t)
+	ctrl, ctx, logicService, appUserRepo, _ := newCtrl(t)
 	defer ctrl.Finish()
 
 	userId := uuid.New().String()
 
-	repo.EXPECT().FindOneByUuid(ctx, userId).Return(nil, model.ErrNotFound)
+	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(nil, model.ErrNotFound)
 
-	_, gotErr := logicService.Get(&user.GetReq{UserId: userId})
-	wantErr := errcode.Wrap(errcode.UserNotExist)
-	if !errors.Is(gotErr, wantErr) {
-		t.Errorf("got %v, want %v", gotErr, wantErr)
+	_, actual := logicService.Get(&user.GetReq{UserId: userId})
+	expected := errcode.Wrap(errcode.UserNotExist)
+	require.Equal(t, expected, actual)
+}
+
+func TestGetAppUserDatabase(t *testing.T) {
+	ctrl, ctx, logicService, appUserRepo, _ := newCtrl(t)
+	defer ctrl.Finish()
+
+	userId := uuid.New().String()
+
+	expected := errcode.Wrap(errcode.Database)
+	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(nil, expected)
+
+	_, actual := logicService.Get(&user.GetReq{UserId: userId})
+	require.Equal(t, actual, expected)
+}
+
+func TestGetLocaleNotExist(t *testing.T) {
+	ctrl, ctx, logicService, appUserRepo, localeRepo := newCtrl(t)
+	defer ctrl.Finish()
+
+	userId := uuid.New().String()
+
+	appUserModel := &model.AppUser{
+		Id:          1,
+		Uuid:        userId,
+		Created:     sql.NullTime{Time: time.Now(), Valid: true},
+		Url:         sql.NullString{String: "Url", Valid: true},
+		SelfLink:    sql.NullString{String: "SelfLink", Valid: true},
+		DisplayName: sql.NullString{String: "DisplayName", Valid: true},
+		About:       sql.NullString{String: "About", Valid: true},
 	}
+	
+	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(appUserModel, nil)
+	localeRepo.EXPECT().FindOneByAppUserUuid(ctx, userId).Return(nil, model.ErrNotFound)
+
+	expected := errcode.Wrap(errcode.LocaleNotExist)
+
+	_, actual := logicService.Get(&user.GetReq{UserId: userId})
+	require.Equal(t, expected, actual)
 }
