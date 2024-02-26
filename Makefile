@@ -9,3 +9,7 @@ test:
 .PHONY: model
 model:
 	@./script/model.sh
+	
+.PHONY: mock
+mock:
+	go generate ./...
