@@ -7,6 +7,7 @@ import (
 
 var _ AppUserModel = (*customAppUserModel)(nil)
 
+//go:generate mockgen -destination=./mock_app_user_model.go -package=model -self_package=github.com/linehk/go-microservices-blogger/service/user/rpc/model github.com/linehk/go-microservices-blogger/service/user/rpc/model AppUserModel
 type (
 	// AppUserModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customAppUserModel.
