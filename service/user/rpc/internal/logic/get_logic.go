@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/jinzhu/copier"
+	"github.com/linehk/go-microservices-blogger/convert"
 	"github.com/linehk/go-microservices-blogger/errcode"
 	"github.com/linehk/go-microservices-blogger/service/blog/rpc/blog"
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/internal/svc"
@@ -40,11 +40,7 @@ func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 	}
 
 	var userResp user.User
-	err = copier.Copy(&userResp, appUserModel)
-	if err != nil {
-		l.Error(errcode.Msg(errcode.Convert))
-		return nil, errcode.Wrap(errcode.Convert)
-	}
+	convert.Copy(&userResp, appUserModel)
 	userResp.Id = appUserModel.Uuid
 	userResp.Kind = "blogger#user"
 
@@ -58,12 +54,8 @@ func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 		return nil, errcode.Wrap(errcode.Database)
 	}
 
-	err = copier.Copy(&userResp.Locale, localeModel)
-	if err != nil {
-		l.Error(errcode.Msg(errcode.Convert))
-		return nil, errcode.Wrap(errcode.Convert)
-	}
-
+	convert.Copy(&userResp.Locale, localeModel)
+	
 	listByUserReq := &blog.ListByUserReq{
 		UserId: in.GetUserId(),
 	}

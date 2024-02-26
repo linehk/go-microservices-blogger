@@ -7,8 +7,7 @@ import (
 
 const (
 	Database uint32 = 20000
-	Convert  uint32 = 20001
-	Service  uint32 = 20002
+	Service  uint32 = 20001
 
 	UserNotExist   uint32 = 30000
 	LocaleNotExist uint32 = 30001
@@ -16,7 +15,6 @@ const (
 
 var msg = map[uint32]string{
 	Database: "database error",
-	Convert:  "convert error",
 	Service:  "service error",
 
 	UserNotExist:   "user not exist",
