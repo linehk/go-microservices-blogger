@@ -7,6 +7,7 @@ import (
 
 var _ LocaleModel = (*customLocaleModel)(nil)
 
+//go:generate mockgen -destination=./mock_locale_model.go -package=model -self_package=github.com/linehk/go-microservices-blogger/service/user/rpc/model github.com/linehk/go-microservices-blogger/service/user/rpc/model LocaleModel
 type (
 	// LocaleModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customLocaleModel.
