@@ -10,6 +10,7 @@ import (
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/internal/svc"
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/model"
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/user"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -43,6 +44,9 @@ func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 	convert.Copy(&userResp, appUserModel)
 	userResp.Id = appUserModel.Uuid
 	userResp.Kind = "blogger#user"
+	if appUserModel.Created.Valid {
+		userResp.Created = timestamppb.New(appUserModel.Created.Time)
+	}
 
 	localeModel, err := l.svcCtx.LocaleModel.FindOneByAppUserUuid(l.ctx, in.GetUserId())
 	if errors.Is(err, model.ErrNotFound) {
