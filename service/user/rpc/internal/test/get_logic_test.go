@@ -174,3 +174,26 @@ func TestGetLocaleNotExist(t *testing.T) {
 
 	require.Equal(t, expected, actual)
 }
+
+func TestGetLocaleDatabase(t *testing.T) {
+	ctrl, ctx, logicService, appUserRepo, localeRepo := newCtrl(t)
+	defer ctrl.Finish()
+
+	userId := uuid.New().String()
+	appUserModel := &model.AppUser{
+		Id:          1,
+		Uuid:        userId,
+		Created:     sql.NullTime{Time: time.Now(), Valid: true},
+		Url:         sql.NullString{String: "Url", Valid: true},
+		SelfLink:    sql.NullString{String: "SelfLink", Valid: true},
+		DisplayName: sql.NullString{String: "DisplayName", Valid: true},
+		About:       sql.NullString{String: "About", Valid: true},
+	}
+	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(appUserModel, nil)
+
+	expected := errcode.Wrap(errcode.Database)
+	localeRepo.EXPECT().FindOneByAppUserUuid(ctx, userId).Return(nil, expected)
+	_, actual := logicService.Get(&user.GetReq{UserId: userId})
+
+	require.Equal(t, expected, actual)
+}
