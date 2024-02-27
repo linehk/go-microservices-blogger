@@ -54,8 +54,9 @@ func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 		return nil, errcode.Wrap(errcode.Database)
 	}
 
+	userResp.Locale = &user.Locale{}
 	convert.Copy(&userResp.Locale, localeModel)
-	
+
 	listByUserReq := &blog.ListByUserReq{
 		UserId: in.GetUserId(),
 	}
@@ -64,8 +65,8 @@ func (l *GetLogic) Get(in *user.GetReq) (*user.User, error) {
 		l.Error(errcode.Msg(errcode.Service))
 		return nil, errcode.Wrap(errcode.Service)
 	}
-	for i, blogItem := range listByUserResp.GetItems() {
-		userResp.Blogs[i].SelfLink = blogItem.GetSelfLink()
+	for _, blogItem := range listByUserResp.GetItems() {
+		userResp.Blogs = append(userResp.Blogs, &user.Blogs{SelfLink: blogItem.GetSelfLink()})
 	}
 
 	return &userResp, nil
