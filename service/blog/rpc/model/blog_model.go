@@ -7,6 +7,7 @@ import (
 
 var _ BlogModel = (*customBlogModel)(nil)
 
+//go:generate mockgen -destination=./mock_blog_model.go -package=model -self_package=github.com/linehk/go-microservices-blogger/service/blog/rpc/model github.com/linehk/go-microservices-blogger/service/blog/rpc/model BlogModel
 type (
 	// BlogModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customBlogModel.

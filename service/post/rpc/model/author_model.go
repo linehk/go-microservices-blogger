@@ -7,6 +7,7 @@ import (
 
 var _ AuthorModel = (*customAuthorModel)(nil)
 
+//go:generate mockgen -destination=./mock_author_model.go -package=model -self_package=github.com/linehk/go-microservices-blogger/service/post/rpc/model github.com/linehk/go-microservices-blogger/service/post/rpc/model AuthorModel
 type (
 	// AuthorModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customAuthorModel.

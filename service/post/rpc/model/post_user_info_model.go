@@ -7,6 +7,7 @@ import (
 
 var _ PostUserInfoModel = (*customPostUserInfoModel)(nil)
 
+//go:generate mockgen -destination=./mock_post_user_info_model.go -package=model -self_package=github.com/linehk/go-microservices-blogger/service/post/rpc/model github.com/linehk/go-microservices-blogger/service/post/rpc/model PostUserInfoModel
 type (
 	// PostUserInfoModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customPostUserInfoModel.

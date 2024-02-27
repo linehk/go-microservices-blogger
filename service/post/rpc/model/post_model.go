@@ -7,6 +7,7 @@ import (
 
 var _ PostModel = (*customPostModel)(nil)
 
+//go:generate mockgen -destination=./mock_post_model.go -package=model -self_package=github.com/linehk/go-microservices-blogger/service/post/rpc/model github.com/linehk/go-microservices-blogger/service/post/rpc/model PostModel
 type (
 	// PostModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customPostModel.

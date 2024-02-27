@@ -7,6 +7,7 @@ import (
 
 var _ PageViewsModel = (*customPageViewsModel)(nil)
 
+//go:generate mockgen -destination=./mock_page_views_model.go -package=model -self_package=github.com/linehk/go-microservices-blogger/service/blog/rpc/model github.com/linehk/go-microservices-blogger/service/blog/rpc/model PageViewsModel
 type (
 	// PageViewsModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customPageViewsModel.

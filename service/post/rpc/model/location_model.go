@@ -7,6 +7,7 @@ import (
 
 var _ LocationModel = (*customLocationModel)(nil)
 
+//go:generate mockgen -destination=./mock_location_model.go -package=model -self_package=github.com/linehk/go-microservices-blogger/service/post/rpc/model github.com/linehk/go-microservices-blogger/service/post/rpc/model LocationModel
 type (
 	// LocationModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customLocationModel.
