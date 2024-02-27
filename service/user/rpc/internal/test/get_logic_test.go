@@ -133,9 +133,9 @@ func TestGetUserNotExist(t *testing.T) {
 	userId := uuid.New().String()
 
 	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(nil, model.ErrNotFound)
-
 	_, actual := logicService.Get(&user.GetReq{UserId: userId})
 	expected := errcode.Wrap(errcode.UserNotExist)
+
 	require.Equal(t, expected, actual)
 }
 
@@ -147,8 +147,8 @@ func TestGetAppUserDatabase(t *testing.T) {
 
 	expected := errcode.Wrap(errcode.Database)
 	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(nil, expected)
-
 	_, actual := logicService.Get(&user.GetReq{UserId: userId})
+
 	require.Equal(t, actual, expected)
 }
 
@@ -157,7 +157,6 @@ func TestGetLocaleNotExist(t *testing.T) {
 	defer ctrl.Finish()
 
 	userId := uuid.New().String()
-
 	appUserModel := &model.AppUser{
 		Id:          1,
 		Uuid:        userId,
@@ -167,12 +166,11 @@ func TestGetLocaleNotExist(t *testing.T) {
 		DisplayName: sql.NullString{String: "DisplayName", Valid: true},
 		About:       sql.NullString{String: "About", Valid: true},
 	}
-	
 	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(appUserModel, nil)
+
 	localeRepo.EXPECT().FindOneByAppUserUuid(ctx, userId).Return(nil, model.ErrNotFound)
-
 	expected := errcode.Wrap(errcode.LocaleNotExist)
-
 	_, actual := logicService.Get(&user.GetReq{UserId: userId})
+
 	require.Equal(t, expected, actual)
 }
