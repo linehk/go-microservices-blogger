@@ -12,4 +12,5 @@ model:
 	
 .PHONY: mock
 mock:
+	@./script/mock.sh
 	go generate ./...
