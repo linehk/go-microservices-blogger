@@ -20,6 +20,7 @@ import (
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/internal/svc"
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/model"
 	"github.com/linehk/go-microservices-blogger/service/user/rpc/user"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/zeromicro/go-zero/core/conf"
 	"go.uber.org/mock/gomock"
@@ -110,14 +111,7 @@ func IntegrationTestGet(t *testing.T) {
 	}
 }
 
-func newCtrl(t *testing.T) (
-	*gomock.Controller,
-	context.Context,
-	*logic.GetLogic,
-	*model.MockAppUserModel,
-	*model.MockLocaleModel,
-	*blogservice.MockBlogService) {
-
+func TestGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	ctx := context.Background()
 	appUserRepo := model.NewMockAppUserModel(ctrl)
@@ -128,147 +122,67 @@ func newCtrl(t *testing.T) (
 		LocaleModel:  localeRepo,
 		BlogService:  blogService,
 	})
-	return ctrl, ctx, logicService, appUserRepo, localeRepo, blogService
-}
-
-func TestGetUserNotExist(t *testing.T) {
-	ctrl, ctx, logicService, appUserRepo, _, _ := newCtrl(t)
 	defer ctrl.Finish()
 
 	userId := uuid.New().String()
+	appUserModel := &model.AppUser{
+		Id:          1,
+		Uuid:        userId,
+		Created:     sql.NullTime{Time: time.Now(), Valid: true},
+		Url:         sql.NullString{String: "Url", Valid: true},
+		SelfLink:    sql.NullString{String: "SelfLink", Valid: true},
+		DisplayName: sql.NullString{String: "DisplayName", Valid: true},
+		About:       sql.NullString{String: "About", Valid: true},
+	}
 
+	localeId := uuid.New().String()
+	localeModel := &model.Locale{
+		Id:          1,
+		Uuid:        localeId,
+		AppUserUuid: userId,
+		Language:    sql.NullString{String: "en-US", Valid: true},
+		Country:     sql.NullString{String: "US", Valid: true},
+		Variant:     sql.NullString{String: "Variant", Valid: true},
+	}
+
+	// UserNotExist
+	expectedErr := errcode.Wrap(errcode.UserNotExist)
 	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(nil, model.ErrNotFound)
-	_, actual := logicService.Get(&user.GetReq{UserId: userId})
-	expected := errcode.Wrap(errcode.UserNotExist)
+	_, actualErr := logicService.Get(&user.GetReq{UserId: userId})
+	assert.Equal(t, expectedErr, actualErr)
 
-	require.Equal(t, expected, actual)
-}
+	// Database
+	expectedErr = errcode.Wrap(errcode.Database)
+	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(nil, expectedErr)
+	_, actualErr = logicService.Get(&user.GetReq{UserId: userId})
+	assert.Equal(t, expectedErr, actualErr)
 
-func TestGetAppUserDatabase(t *testing.T) {
-	ctrl, ctx, logicService, appUserRepo, _, _ := newCtrl(t)
-	defer ctrl.Finish()
-
-	userId := uuid.New().String()
-
-	expected := errcode.Wrap(errcode.Database)
-	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(nil, expected)
-	_, actual := logicService.Get(&user.GetReq{UserId: userId})
-
-	require.Equal(t, actual, expected)
-}
-
-func TestGetLocaleNotExist(t *testing.T) {
-	ctrl, ctx, logicService, appUserRepo, localeRepo, _ := newCtrl(t)
-	defer ctrl.Finish()
-
-	userId := uuid.New().String()
-	appUserModel := &model.AppUser{
-		Id:          1,
-		Uuid:        userId,
-		Created:     sql.NullTime{Time: time.Now(), Valid: true},
-		Url:         sql.NullString{String: "Url", Valid: true},
-		SelfLink:    sql.NullString{String: "SelfLink", Valid: true},
-		DisplayName: sql.NullString{String: "DisplayName", Valid: true},
-		About:       sql.NullString{String: "About", Valid: true},
-	}
+	// LocaleNotExist
+	expectedErr = errcode.Wrap(errcode.LocaleNotExist)
 	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(appUserModel, nil)
-
 	localeRepo.EXPECT().FindOneByAppUserUuid(ctx, userId).Return(nil, model.ErrNotFound)
-	expected := errcode.Wrap(errcode.LocaleNotExist)
-	_, actual := logicService.Get(&user.GetReq{UserId: userId})
+	_, actualErr = logicService.Get(&user.GetReq{UserId: userId})
+	assert.Equal(t, expectedErr, actualErr)
 
-	require.Equal(t, expected, actual)
-}
-
-func TestGetLocaleDatabase(t *testing.T) {
-	ctrl, ctx, logicService, appUserRepo, localeRepo, _ := newCtrl(t)
-	defer ctrl.Finish()
-
-	userId := uuid.New().String()
-	appUserModel := &model.AppUser{
-		Id:          1,
-		Uuid:        userId,
-		Created:     sql.NullTime{Time: time.Now(), Valid: true},
-		Url:         sql.NullString{String: "Url", Valid: true},
-		SelfLink:    sql.NullString{String: "SelfLink", Valid: true},
-		DisplayName: sql.NullString{String: "DisplayName", Valid: true},
-		About:       sql.NullString{String: "About", Valid: true},
-	}
+	// Database
+	expectedErr = errcode.Wrap(errcode.Database)
 	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(appUserModel, nil)
+	localeRepo.EXPECT().FindOneByAppUserUuid(ctx, userId).Return(nil, expectedErr)
+	_, actualErr = logicService.Get(&user.GetReq{UserId: userId})
+	assert.Equal(t, expectedErr, actualErr)
 
-	expected := errcode.Wrap(errcode.Database)
-	localeRepo.EXPECT().FindOneByAppUserUuid(ctx, userId).Return(nil, expected)
-	_, actual := logicService.Get(&user.GetReq{UserId: userId})
-
-	require.Equal(t, expected, actual)
-}
-
-func TestGetService(t *testing.T) {
-	ctrl, ctx, logicService, appUserRepo, localeRepo, blogService := newCtrl(t)
-	defer ctrl.Finish()
-
-	userId := uuid.New().String()
-	appUserModel := &model.AppUser{
-		Id:          1,
-		Uuid:        userId,
-		Created:     sql.NullTime{Time: time.Now(), Valid: true},
-		Url:         sql.NullString{String: "Url", Valid: true},
-		SelfLink:    sql.NullString{String: "SelfLink", Valid: true},
-		DisplayName: sql.NullString{String: "DisplayName", Valid: true},
-		About:       sql.NullString{String: "About", Valid: true},
-	}
-	localeId := uuid.New().String()
-	localeModel := &model.Locale{
-		Id:          1,
-		Uuid:        localeId,
-		AppUserUuid: userId,
-		Language:    sql.NullString{String: "en-US", Valid: true},
-		Country:     sql.NullString{String: "US", Valid: true},
-		Variant:     sql.NullString{String: "Variant", Valid: true},
-	}
-	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(appUserModel, nil)
-	localeRepo.EXPECT().FindOneByAppUserUuid(ctx, userId).Return(localeModel, nil)
-
+	// Service
 	listByUserReq := &blog.ListByUserReq{
 		UserId: userId,
 	}
-	expected := errcode.Wrap(errcode.Service)
-	blogService.EXPECT().ListByUser(ctx, listByUserReq).Return(nil, expected)
-	_, actual := logicService.Get(&user.GetReq{UserId: userId})
-
-	require.Equal(t, expected, actual)
-}
-
-func TestGetSuccess(t *testing.T) {
-	ctrl, ctx, logicService, appUserRepo, localeRepo, blogService := newCtrl(t)
-	defer ctrl.Finish()
-
-	userId := uuid.New().String()
-	appUserModel := &model.AppUser{
-		Id:          1,
-		Uuid:        userId,
-		Created:     sql.NullTime{Time: time.Now(), Valid: true},
-		Url:         sql.NullString{String: "Url", Valid: true},
-		SelfLink:    sql.NullString{String: "SelfLink", Valid: true},
-		DisplayName: sql.NullString{String: "DisplayName", Valid: true},
-		About:       sql.NullString{String: "About", Valid: true},
-	}
-	localeId := uuid.New().String()
-	localeModel := &model.Locale{
-		Id:          1,
-		Uuid:        localeId,
-		AppUserUuid: userId,
-		Language:    sql.NullString{String: "en-US", Valid: true},
-		Country:     sql.NullString{String: "US", Valid: true},
-		Variant:     sql.NullString{String: "Variant", Valid: true},
-	}
+	expectedErr = errcode.Wrap(errcode.Service)
 	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(appUserModel, nil)
 	localeRepo.EXPECT().FindOneByAppUserUuid(ctx, userId).Return(localeModel, nil)
+	blogService.EXPECT().ListByUser(ctx, listByUserReq).Return(nil, expectedErr)
+	_, actualErr = logicService.Get(&user.GetReq{UserId: userId})
+	assert.Equal(t, expectedErr, actualErr)
 
-	listByUserReq := &blog.ListByUserReq{
-		UserId: userId,
-	}
-
+	// Success
 	selfLink1 := "SelfLink1"
 	selfLink2 := "SelfLink2"
 	listByUserResp := &blog.ListByUserResp{
@@ -282,9 +196,10 @@ func TestGetSuccess(t *testing.T) {
 			}},
 		BlogUserInfos: nil,
 	}
+	expected := []*user.Blogs{{SelfLink: selfLink1}, {SelfLink: selfLink2}}
+	appUserRepo.EXPECT().FindOneByUuid(ctx, userId).Return(appUserModel, nil)
+	localeRepo.EXPECT().FindOneByAppUserUuid(ctx, userId).Return(localeModel, nil)
 	blogService.EXPECT().ListByUser(ctx, listByUserReq).Return(listByUserResp, nil)
 	actual, _ := logicService.Get(&user.GetReq{UserId: userId})
-	expected := []*user.Blogs{{SelfLink: selfLink1}, {SelfLink: selfLink2}}
-
 	require.Equal(t, expected, actual.Blogs)
 }
