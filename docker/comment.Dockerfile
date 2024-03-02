@@ -17,7 +17,7 @@ WORKDIR /
 COPY --from=build /app /app
 COPY --from=build /workdir/service/comment/rpc/etc/comment.yaml /config.yaml
 
-EXPOSE 10000
+EXPOSE 10004
 
 USER nonroot:nonroot
 
