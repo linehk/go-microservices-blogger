@@ -15,6 +15,12 @@ services:
       POSTGRES_PASSWORD: dev
     volumes:
       - ~/db/postgresql/data:/var/lib/postgresql/data
+      - ./service/user/rpc/model/user.sql:/docker-entrypoint-initdb.d/user.sql
+      - ./service/blog/rpc/model/blog.sql:/docker-entrypoint-initdb.d/blog.sql
+      - ./service/post/rpc/model/post.sql:/docker-entrypoint-initdb.d/post.sql
+      - ./service/page/rpc/model/page.sql:/docker-entrypoint-initdb.d/page.sql
+      - ./service/comment/rpc/model/comment.sql:/docker-entrypoint-initdb.d/comment.sql
+
     ports:
       - "5432:5432"
 
