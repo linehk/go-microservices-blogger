@@ -8,3 +8,11 @@ DB:
   DataSource: postgresql://dev:dev@postgresql:5432/go_blogger?sslmode=disable
 Cache:
   - Host: redis:6379
+PostConf:
+  Endpoints:
+    - etcd-single:10002
+  NonBlock: true
+PageConf:
+  Endpoints:
+    - etcd-single:10003
+  NonBlock: true

@@ -10,5 +10,7 @@ type Config struct {
 	DB struct {
 		DataSource string
 	}
-	Cache cache.CacheConf
+	Cache    cache.CacheConf
+	PostConf zrpc.RpcClientConf
+	PageConf zrpc.RpcClientConf
 }
