@@ -9,6 +9,7 @@ services:
     container_name: postgresql
     networks:
       - app-net
+    restart: unless-stopped
     environment:
       POSTGRES_DB: go_blogger
       POSTGRES_USER: dev
@@ -20,7 +21,6 @@ services:
       - ./service/post/rpc/model/post.sql:/docker-entrypoint-initdb.d/post.sql
       - ./service/page/rpc/model/page.sql:/docker-entrypoint-initdb.d/page.sql
       - ./service/comment/rpc/model/comment.sql:/docker-entrypoint-initdb.d/comment.sql
-
     ports:
       - "5432:5432"
 
@@ -29,6 +29,7 @@ services:
     container_name: redis
     networks:
       - app-net
+    restart: unless-stopped
     ports:
       - "6379:6379"
 
@@ -39,6 +40,7 @@ services:
     container_name: user-service
     networks:
       - app-net
+    restart: unless-stopped
     ports:
       - "10000:10000"
     depends_on:
@@ -53,6 +55,7 @@ services:
     container_name: blog-service
     networks:
       - app-net
+    restart: unless-stopped
     ports:
       - "10001:10001"
     depends_on:
@@ -67,6 +70,7 @@ services:
     container_name: post-service
     networks:
       - app-net
+    restart: unless-stopped
     ports:
       - "10002:10002"
     depends_on:
@@ -81,6 +85,7 @@ services:
     container_name: page-service
     networks:
       - app-net
+    restart: unless-stopped
     ports:
       - "10003:10003"
     depends_on:
@@ -95,6 +100,7 @@ services:
     container_name: comment-service
     networks:
       - app-net
+    restart: unless-stopped
     ports:
       - "10004:10004"
     depends_on:
@@ -107,6 +113,7 @@ services:
     container_name: etcd-single
     networks:
       - app-net
+    restart: unless-stopped
     entrypoint: ["/usr/local/bin/etcd", "--config-file", "/etcd/single/conf/etcd.yaml"]
     ports:
       - "2379:2379"
