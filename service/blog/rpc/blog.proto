@@ -14,8 +14,8 @@ message Blog {
   google.protobuf.Timestamp updated = 6;
   string url = 7;
   string selfLink = 8;
-  Posts posts = 9;
-  Pages pages = 10;
+  repeated Posts posts = 9;
+  repeated Pages pages = 10;
   string customMetaData = 11;
 }
 
