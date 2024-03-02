@@ -17,15 +17,11 @@ message Blog {
   Posts posts = 9;
   Pages pages = 10;
   string customMetaData = 11;
-  PostsItems posts_items = 12;
 }
 
 message Posts {
   string totalItems = 1;
   string selfLink = 2;
-}
-
-message PostsItems {
 }
 
 message Pages {

@@ -26,7 +26,6 @@ type (
 	PageViews        = blog.PageViews
 	Pages            = blog.Pages
 	Posts            = blog.Posts
-	PostsItems       = blog.PostsItems
 
 	BlogService interface {
 		Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*Blog, error)
