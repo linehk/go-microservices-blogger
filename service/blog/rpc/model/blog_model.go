@@ -18,6 +18,7 @@ type (
 	BlogModel interface {
 		blogModel
 		FindOneByUrl(ctx context.Context, url string) (*Blog, error)
+		ListByAppUserUuid(ctx context.Context, appUserUuid string) ([]*Blog, error)
 	}
 
 	customBlogModel struct {
@@ -33,7 +34,8 @@ func NewBlogModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) Bl
 }
 
 var (
-	cachePublicBlogUrlPrefix = "cache:public:blog:url:"
+	cachePublicBlogUrlPrefix             = "cache:public:blog:url:"
+	cachePublicBlogListAppUserUuidPrefix = "cache:public:blog:list:appUserUuid:"
 )
 
 func (c *customBlogModel) FindOneByUrl(ctx context.Context, url string) (*Blog, error) {
@@ -49,6 +51,26 @@ func (c *customBlogModel) FindOneByUrl(ctx context.Context, url string) (*Blog, 
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultBlogModel) ListByAppUserUuid(ctx context.Context, appUserUuid string) ([]*Blog, error) {
+	publicBlogListAppUserUuidKey := fmt.Sprintf("%s%v", cachePublicBlogListAppUserUuidPrefix, appUserUuid)
+	var resp []*Blog
+	err := m.QueryRowIndexCtx(ctx, &resp, publicBlogListAppUserUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where app_user_uuid = $1", blogRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, appUserUuid); err != nil {
+			return nil, err
+		}
+		return resp[0].Id, nil
+	}, m.queryPrimary)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
