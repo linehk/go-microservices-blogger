@@ -13,6 +13,8 @@ const (
 	LocaleNotExist uint32 = 30001
 
 	BlogNotExist uint32 = 40000
+
+	BlogUserInfoNotExist uint32 = 50000
 )
 
 var msg = map[uint32]string{
@@ -23,6 +25,8 @@ var msg = map[uint32]string{
 	LocaleNotExist: "locale not exist",
 
 	BlogNotExist: "blog not exist",
+
+	BlogUserInfoNotExist: "blog user info not exist",
 }
 
 func Wrap(e uint32) error {
