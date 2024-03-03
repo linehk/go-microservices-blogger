@@ -1,7 +1,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -13,6 +17,7 @@ type (
 	// and implement the added methods in customBlogModel.
 	BlogModel interface {
 		blogModel
+		FindOneByUrl(ctx context.Context, url string) (*Blog, error)
 	}
 
 	customBlogModel struct {
@@ -24,5 +29,29 @@ type (
 func NewBlogModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) BlogModel {
 	return &customBlogModel{
 		defaultBlogModel: newBlogModel(conn, c, opts...),
+	}
+}
+
+var (
+	cachePublicBlogUrlPrefix = "cache:public:blog:url:"
+)
+
+func (c *customBlogModel) FindOneByUrl(ctx context.Context, url string) (*Blog, error) {
+	publicBlogUrlKey := fmt.Sprintf("%s%v", cachePublicBlogUrlPrefix, url)
+	var resp Blog
+	err := c.QueryRowIndexCtx(ctx, &resp, publicBlogUrlKey, c.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where url = $1 limit 1", blogRows, c.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, url); err != nil {
+			return nil, err
+		}
+		return resp.Id, nil
+	}, c.queryPrimary)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
 	}
 }
