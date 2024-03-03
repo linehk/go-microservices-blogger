@@ -64,7 +64,7 @@ message BlogUserInfo {
   bool hasAdminAccess = 5;
 }
 
-message BlogUserInfosReq {
+message GetBlogUserInfosReq {
   string blogId = 1;
   string userId = 2;
   uint64 maxPosts = 3;
@@ -90,6 +90,6 @@ service BlogService {
   rpc Get(GetReq) returns (Blog);
   rpc GetByUrl(GetByUrlReq) returns (Blog);
   rpc ListByUser(ListByUserReq) returns (ListByUserResp);
-  rpc GetBlogUserInfos(BlogUserInfosReq) returns (BlogUserInfos);
+  rpc GetBlogUserInfos(GetBlogUserInfosReq) returns (BlogUserInfos);
   rpc GetPageViews(GetPageViewsReq) returns (PageViews);
 }

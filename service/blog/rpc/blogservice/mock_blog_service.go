@@ -61,7 +61,7 @@ func (mr *MockBlogServiceMockRecorder) Get(ctx, in any, opts ...any) *gomock.Cal
 }
 
 // GetBlogUserInfos mocks base method.
-func (m *MockBlogService) GetBlogUserInfos(ctx context.Context, in *BlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error) {
+func (m *MockBlogService) GetBlogUserInfos(ctx context.Context, in *GetBlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error) {
 	m.ctrl.T.Helper()
 	varargs := []any{ctx, in}
 	for _, a := range opts {

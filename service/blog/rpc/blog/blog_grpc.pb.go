@@ -33,7 +33,7 @@ type BlogServiceClient interface {
 	Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*Blog, error)
 	GetByUrl(ctx context.Context, in *GetByUrlReq, opts ...grpc.CallOption) (*Blog, error)
 	ListByUser(ctx context.Context, in *ListByUserReq, opts ...grpc.CallOption) (*ListByUserResp, error)
-	GetBlogUserInfos(ctx context.Context, in *BlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error)
+	GetBlogUserInfos(ctx context.Context, in *GetBlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error)
 	GetPageViews(ctx context.Context, in *GetPageViewsReq, opts ...grpc.CallOption) (*PageViews, error)
 }
 
@@ -72,7 +72,7 @@ func (c *blogServiceClient) ListByUser(ctx context.Context, in *ListByUserReq, o
 	return out, nil
 }
 
-func (c *blogServiceClient) GetBlogUserInfos(ctx context.Context, in *BlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error) {
+func (c *blogServiceClient) GetBlogUserInfos(ctx context.Context, in *GetBlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error) {
 	out := new(BlogUserInfos)
 	err := c.cc.Invoke(ctx, BlogService_GetBlogUserInfos_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -97,7 +97,7 @@ type BlogServiceServer interface {
 	Get(context.Context, *GetReq) (*Blog, error)
 	GetByUrl(context.Context, *GetByUrlReq) (*Blog, error)
 	ListByUser(context.Context, *ListByUserReq) (*ListByUserResp, error)
-	GetBlogUserInfos(context.Context, *BlogUserInfosReq) (*BlogUserInfos, error)
+	GetBlogUserInfos(context.Context, *GetBlogUserInfosReq) (*BlogUserInfos, error)
 	GetPageViews(context.Context, *GetPageViewsReq) (*PageViews, error)
 	mustEmbedUnimplementedBlogServiceServer()
 }
@@ -115,7 +115,7 @@ func (UnimplementedBlogServiceServer) GetByUrl(context.Context, *GetByUrlReq) (*
 func (UnimplementedBlogServiceServer) ListByUser(context.Context, *ListByUserReq) (*ListByUserResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListByUser not implemented")
 }
-func (UnimplementedBlogServiceServer) GetBlogUserInfos(context.Context, *BlogUserInfosReq) (*BlogUserInfos, error) {
+func (UnimplementedBlogServiceServer) GetBlogUserInfos(context.Context, *GetBlogUserInfosReq) (*BlogUserInfos, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBlogUserInfos not implemented")
 }
 func (UnimplementedBlogServiceServer) GetPageViews(context.Context, *GetPageViewsReq) (*PageViews, error) {
@@ -189,7 +189,7 @@ func _BlogService_ListByUser_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _BlogService_GetBlogUserInfos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BlogUserInfosReq)
+	in := new(GetBlogUserInfosReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -201,7 +201,7 @@ func _BlogService_GetBlogUserInfos_Handler(srv interface{}, ctx context.Context,
 		FullMethod: BlogService_GetBlogUserInfos_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BlogServiceServer).GetBlogUserInfos(ctx, req.(*BlogUserInfosReq))
+		return srv.(BlogServiceServer).GetBlogUserInfos(ctx, req.(*GetBlogUserInfosReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

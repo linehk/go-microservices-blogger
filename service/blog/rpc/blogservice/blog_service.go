@@ -13,25 +13,25 @@ import (
 )
 
 type (
-	Blog             = blog.Blog
-	BlogUserInfo     = blog.BlogUserInfo
-	BlogUserInfos    = blog.BlogUserInfos
-	BlogUserInfosReq = blog.BlogUserInfosReq
-	Count            = blog.Count
-	GetByUrlReq      = blog.GetByUrlReq
-	GetPageViewsReq  = blog.GetPageViewsReq
-	GetReq           = blog.GetReq
-	ListByUserReq    = blog.ListByUserReq
-	ListByUserResp   = blog.ListByUserResp
-	PageViews        = blog.PageViews
-	Pages            = blog.Pages
-	Posts            = blog.Posts
+	Blog                = blog.Blog
+	BlogUserInfo        = blog.BlogUserInfo
+	BlogUserInfos       = blog.BlogUserInfos
+	Count               = blog.Count
+	GetBlogUserInfosReq = blog.GetBlogUserInfosReq
+	GetByUrlReq         = blog.GetByUrlReq
+	GetPageViewsReq     = blog.GetPageViewsReq
+	GetReq              = blog.GetReq
+	ListByUserReq       = blog.ListByUserReq
+	ListByUserResp      = blog.ListByUserResp
+	PageViews           = blog.PageViews
+	Pages               = blog.Pages
+	Posts               = blog.Posts
 
 	BlogService interface {
 		Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*Blog, error)
 		GetByUrl(ctx context.Context, in *GetByUrlReq, opts ...grpc.CallOption) (*Blog, error)
 		ListByUser(ctx context.Context, in *ListByUserReq, opts ...grpc.CallOption) (*ListByUserResp, error)
-		GetBlogUserInfos(ctx context.Context, in *BlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error)
+		GetBlogUserInfos(ctx context.Context, in *GetBlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error)
 		GetPageViews(ctx context.Context, in *GetPageViewsReq, opts ...grpc.CallOption) (*PageViews, error)
 	}
 
@@ -61,7 +61,7 @@ func (m *defaultBlogService) ListByUser(ctx context.Context, in *ListByUserReq, 
 	return client.ListByUser(ctx, in, opts...)
 }
 
-func (m *defaultBlogService) GetBlogUserInfos(ctx context.Context, in *BlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error) {
+func (m *defaultBlogService) GetBlogUserInfos(ctx context.Context, in *GetBlogUserInfosReq, opts ...grpc.CallOption) (*BlogUserInfos, error) {
 	client := blog.NewBlogServiceClient(m.cli.Conn())
 	return client.GetBlogUserInfos(ctx, in, opts...)
 }

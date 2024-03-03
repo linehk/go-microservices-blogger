@@ -37,7 +37,7 @@ func (s *BlogServiceServer) ListByUser(ctx context.Context, in *blog.ListByUserR
 	return l.ListByUser(in)
 }
 
-func (s *BlogServiceServer) GetBlogUserInfos(ctx context.Context, in *blog.BlogUserInfosReq) (*blog.BlogUserInfos, error) {
+func (s *BlogServiceServer) GetBlogUserInfos(ctx context.Context, in *blog.GetBlogUserInfosReq) (*blog.BlogUserInfos, error) {
 	l := logic.NewGetBlogUserInfosLogic(ctx, s.svcCtx)
 	return l.GetBlogUserInfos(in)
 }
