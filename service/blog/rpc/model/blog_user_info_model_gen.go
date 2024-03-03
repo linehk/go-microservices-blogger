@@ -48,7 +48,7 @@ type (
 		Uuid           string         `db:"uuid"`
 		UserUuid       string         `db:"user_uuid"`
 		BlogUuid       string         `db:"blog_uuid"`
-		PhtotsAlbumKey sql.NullString `db:"phtots_album_key"`
+		PhotosAlbumKey sql.NullString `db:"photos_album_key"`
 		HasAdminAccess sql.NullBool   `db:"has_admin_access"`
 	}
 )
@@ -161,7 +161,7 @@ func (m *defaultBlogUserInfoModel) Insert(ctx context.Context, data *BlogUserInf
 	publicBlogUserInfoUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5)", m.table, blogUserInfoRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.Uuid, data.UserUuid, data.BlogUuid, data.PhtotsAlbumKey, data.HasAdminAccess)
+		return conn.ExecCtx(ctx, query, data.Uuid, data.UserUuid, data.BlogUuid, data.PhotosAlbumKey, data.HasAdminAccess)
 	}, publicBlogUserInfoBlogUuidKey, publicBlogUserInfoIdKey, publicBlogUserInfoUserUuidKey, publicBlogUserInfoUuidKey)
 	return ret, err
 }
@@ -178,7 +178,7 @@ func (m *defaultBlogUserInfoModel) Update(ctx context.Context, newData *BlogUser
 	publicBlogUserInfoUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, blogUserInfoRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.UserUuid, newData.BlogUuid, newData.PhtotsAlbumKey, newData.HasAdminAccess)
+		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.UserUuid, newData.BlogUuid, newData.PhotosAlbumKey, newData.HasAdminAccess)
 	}, publicBlogUserInfoBlogUuidKey, publicBlogUserInfoIdKey, publicBlogUserInfoUserUuidKey, publicBlogUserInfoUuidKey)
 	return err
 }

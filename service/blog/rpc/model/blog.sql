@@ -16,7 +16,7 @@ CREATE TABLE blog_user_info (
   uuid VARCHAR UNIQUE NOT NULL,
   user_uuid VARCHAR UNIQUE NOT NULL,
   blog_uuid VARCHAR UNIQUE NOT NULL,
-  phtots_album_key VARCHAR,
+  photos_album_key VARCHAR,
   has_admin_access BOOLEAN
 );
 
