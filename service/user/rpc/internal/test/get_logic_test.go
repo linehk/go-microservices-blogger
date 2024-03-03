@@ -124,7 +124,7 @@ func TestGet(t *testing.T) {
 	})
 	defer ctrl.Finish()
 
-	userId := uuid.New().String()
+	userId := uuid.NewString()
 	created := time.Now()
 	url := "Url"
 	userSelfLink := "UserSelfLink"
@@ -140,7 +140,7 @@ func TestGet(t *testing.T) {
 		About:       sql.NullString{String: about, Valid: true},
 	}
 
-	localeId := uuid.New().String()
+	localeId := uuid.NewString()
 	language := "Language"
 	country := "Country"
 	variant := "Variant"

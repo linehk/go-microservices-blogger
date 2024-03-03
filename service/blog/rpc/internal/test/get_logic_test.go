@@ -34,11 +34,11 @@ func TestGet(t *testing.T) {
 	})
 	defer ctrl.Finish()
 
-	blogId := uuid.New().String()
+	blogId := uuid.NewString()
 
 	getReq := &blog.GetReq{BlogId: blogId}
 
-	userId := uuid.New().String()
+	userId := uuid.NewString()
 	name := "Name"
 	description := "Description"
 	published := time.Now()
