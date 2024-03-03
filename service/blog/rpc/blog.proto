@@ -72,7 +72,7 @@ message GetBlogUserInfosReq {
 
 message PageViews {
   string kind = 1;
-  int64 blogId = 2;
+  string blogId = 2;
   repeated Count counts = 3;
 }
 
