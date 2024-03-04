@@ -1,10 +1,12 @@
 package svc
 
 import (
+	"github.com/linehk/go-microservices-blogger/service/comment/rpc/commentservice"
 	"github.com/linehk/go-microservices-blogger/service/post/rpc/internal/config"
 	"github.com/linehk/go-microservices-blogger/service/post/rpc/model"
 	"github.com/zeromicro/go-zero/core/stores/postgres"
 	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
@@ -16,6 +18,7 @@ type ServiceContext struct {
 	LocationModel     model.LocationModel
 	PostModel         model.PostModel
 	PostUserInfoModel model.PostUserInfoModel
+	CommentService    commentservice.CommentService
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -32,5 +35,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LocationModel:     model.NewLocationModel(conn, c.Cache),
 		PostModel:         model.NewPostModel(conn, c.Cache),
 		PostUserInfoModel: model.NewPostUserInfoModel(conn, c.Cache),
+		CommentService:    commentservice.NewCommentService(zrpc.MustNewClient(c.CommentConf)),
 	}
 }
