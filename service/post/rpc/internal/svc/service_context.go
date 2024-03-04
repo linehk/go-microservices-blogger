@@ -10,7 +10,7 @@ import (
 type ServiceContext struct {
 	Config            config.Config
 	RedisClient       *redis.Redis
-	AuthModel         model.AuthorModel
+	AuthorModel       model.AuthorModel
 	ImageModel        model.ImageModel
 	LabelModel        model.LabelModel
 	LocationModel     model.LocationModel
@@ -26,7 +26,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Host: c.Cache[0].Host,
 			Type: redis.NodeType,
 		}),
-		AuthModel:         model.NewAuthorModel(conn, c.Cache),
+		AuthorModel:       model.NewAuthorModel(conn, c.Cache),
 		ImageModel:        model.NewImageModel(conn, c.Cache),
 		LabelModel:        model.NewLabelModel(conn, c.Cache),
 		LocationModel:     model.NewLocationModel(conn, c.Cache),
