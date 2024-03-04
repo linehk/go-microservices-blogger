@@ -129,6 +129,21 @@ func (mr *MockImageModelMockRecorder) Insert(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockImageModel)(nil).Insert), arg0, arg1)
 }
 
+// ListByPostUuid mocks base method.
+func (m *MockImageModel) ListByPostUuid(arg0 context.Context, arg1 string) ([]*Image, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByPostUuid", arg0, arg1)
+	ret0, _ := ret[0].([]*Image)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByPostUuid indicates an expected call of ListByPostUuid.
+func (mr *MockImageModelMockRecorder) ListByPostUuid(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByPostUuid", reflect.TypeOf((*MockImageModel)(nil).ListByPostUuid), arg0, arg1)
+}
+
 // Update mocks base method.
 func (m *MockImageModel) Update(arg0 context.Context, arg1 *Image) error {
 	m.ctrl.T.Helper()
