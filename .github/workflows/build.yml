@@ -7,6 +7,9 @@ jobs:
     - uses: actions/setup-go@main
       with:
         go-version-file: 'go.mod'
+    - uses: golangci/golangci-lint-action@v4
+      with:
+        version: v1.55
     - run:
         go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
     - uses: codecov/codecov-action@v3
