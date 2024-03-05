@@ -4,7 +4,7 @@ CREATE TABLE post (
   blog_uuid VARCHAR UNIQUE NOT NULL,
   published TIMESTAMP,
   updated TIMESTAMP,
-  url VARCHAR,
+  url VARCHAR UNIQUE NOT NULL,
   self_link VARCHAR,
   title VARCHAR,
   title_link VARCHAR,

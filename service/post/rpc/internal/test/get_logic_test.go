@@ -60,7 +60,7 @@ func TestGet(t *testing.T) {
 		BlogUuid:       blogId,
 		Published:      sql.NullTime{Time: published, Valid: true},
 		Updated:        sql.NullTime{Time: updated, Valid: true},
-		Url:            sql.NullString{String: postUrl, Valid: true},
+		Url:            postUrl,
 		SelfLink:       sql.NullString{String: postSelfLink, Valid: true},
 		Title:          sql.NullString{String: postTitle, Valid: true},
 		TitleLink:      sql.NullString{String: postTitleLink, Valid: true},

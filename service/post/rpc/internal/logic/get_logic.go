@@ -6,9 +6,9 @@ import (
 
 	"github.com/linehk/go-microservices-blogger/convert"
 	"github.com/linehk/go-microservices-blogger/errcode"
-	"github.com/linehk/go-microservices-blogger/service/blog/rpc/model"
 	"github.com/linehk/go-microservices-blogger/service/comment/rpc/comment"
 	"github.com/linehk/go-microservices-blogger/service/post/rpc/internal/svc"
+	"github.com/linehk/go-microservices-blogger/service/post/rpc/model"
 	"github.com/linehk/go-microservices-blogger/service/post/rpc/post"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
