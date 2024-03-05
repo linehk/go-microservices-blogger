@@ -81,14 +81,14 @@ func (mr *MockPostServiceMockRecorder) Get(ctx, in any, opts ...any) *gomock.Cal
 }
 
 // GetByPath mocks base method.
-func (m *MockPostService) GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*EmptyResp, error) {
+func (m *MockPostService) GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*Post, error) {
 	m.ctrl.T.Helper()
 	varargs := []any{ctx, in}
 	for _, a := range opts {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "GetByPath", varargs...)
-	ret0, _ := ret[0].(*EmptyResp)
+	ret0, _ := ret[0].(*Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
