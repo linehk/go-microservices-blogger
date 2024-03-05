@@ -42,7 +42,7 @@ type PostServiceClient interface {
 	Search(ctx context.Context, in *SearchReq, opts ...grpc.CallOption) (*SearchResp, error)
 	Insert(ctx context.Context, in *InsertReq, opts ...grpc.CallOption) (*Post, error)
 	Delete(ctx context.Context, in *DeleteReq, opts ...grpc.CallOption) (*EmptyResp, error)
-	GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*EmptyResp, error)
+	GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*Post, error)
 	Patch(ctx context.Context, in *PatchReq, opts ...grpc.CallOption) (*Post, error)
 	Update(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*Post, error)
 	Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*Post, error)
@@ -104,8 +104,8 @@ func (c *postServiceClient) Delete(ctx context.Context, in *DeleteReq, opts ...g
 	return out, nil
 }
 
-func (c *postServiceClient) GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*EmptyResp, error) {
-	out := new(EmptyResp)
+func (c *postServiceClient) GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*Post, error) {
+	out := new(Post)
 	err := c.cc.Invoke(ctx, PostService_GetByPath_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -176,7 +176,7 @@ type PostServiceServer interface {
 	Search(context.Context, *SearchReq) (*SearchResp, error)
 	Insert(context.Context, *InsertReq) (*Post, error)
 	Delete(context.Context, *DeleteReq) (*EmptyResp, error)
-	GetByPath(context.Context, *GetByPathReq) (*EmptyResp, error)
+	GetByPath(context.Context, *GetByPathReq) (*Post, error)
 	Patch(context.Context, *PatchReq) (*Post, error)
 	Update(context.Context, *UpdateReq) (*Post, error)
 	Publish(context.Context, *PublishReq) (*Post, error)
@@ -205,7 +205,7 @@ func (UnimplementedPostServiceServer) Insert(context.Context, *InsertReq) (*Post
 func (UnimplementedPostServiceServer) Delete(context.Context, *DeleteReq) (*EmptyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedPostServiceServer) GetByPath(context.Context, *GetByPathReq) (*EmptyResp, error) {
+func (UnimplementedPostServiceServer) GetByPath(context.Context, *GetByPathReq) (*Post, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByPath not implemented")
 }
 func (UnimplementedPostServiceServer) Patch(context.Context, *PatchReq) (*Post, error) {

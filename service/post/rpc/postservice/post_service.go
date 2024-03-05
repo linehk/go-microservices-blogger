@@ -48,7 +48,7 @@ type (
 		Search(ctx context.Context, in *SearchReq, opts ...grpc.CallOption) (*SearchResp, error)
 		Insert(ctx context.Context, in *InsertReq, opts ...grpc.CallOption) (*Post, error)
 		Delete(ctx context.Context, in *DeleteReq, opts ...grpc.CallOption) (*EmptyResp, error)
-		GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*EmptyResp, error)
+		GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*Post, error)
 		Patch(ctx context.Context, in *PatchReq, opts ...grpc.CallOption) (*Post, error)
 		Update(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*Post, error)
 		Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*Post, error)
@@ -93,7 +93,7 @@ func (m *defaultPostService) Delete(ctx context.Context, in *DeleteReq, opts ...
 	return client.Delete(ctx, in, opts...)
 }
 
-func (m *defaultPostService) GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*EmptyResp, error) {
+func (m *defaultPostService) GetByPath(ctx context.Context, in *GetByPathReq, opts ...grpc.CallOption) (*Post, error) {
 	client := post.NewPostServiceClient(m.cli.Conn())
 	return client.GetByPath(ctx, in, opts...)
 }

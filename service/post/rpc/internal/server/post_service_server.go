@@ -47,7 +47,7 @@ func (s *PostServiceServer) Delete(ctx context.Context, in *post.DeleteReq) (*po
 	return l.Delete(in)
 }
 
-func (s *PostServiceServer) GetByPath(ctx context.Context, in *post.GetByPathReq) (*post.EmptyResp, error) {
+func (s *PostServiceServer) GetByPath(ctx context.Context, in *post.GetByPathReq) (*post.Post, error) {
 	l := logic.NewGetByPathLogic(ctx, s.svcCtx)
 	return l.GetByPath(in)
 }

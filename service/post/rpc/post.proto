@@ -211,7 +211,7 @@ service PostService {
   rpc Search(SearchReq) returns(SearchResp);
   rpc Insert(InsertReq) returns(Post);
   rpc Delete(DeleteReq) returns(EmptyResp);
-  rpc GetByPath(GetByPathReq) returns(EmptyResp);
+  rpc GetByPath(GetByPathReq) returns(Post);
   rpc Patch(PatchReq) returns(Post);
   rpc Update(UpdateReq) returns(Post);
   rpc Publish(PublishReq) returns(Post);
