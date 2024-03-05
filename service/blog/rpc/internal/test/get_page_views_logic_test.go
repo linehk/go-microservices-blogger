@@ -60,4 +60,5 @@ func TestGetPageViews(t *testing.T) {
 	pageViewsRepo.EXPECT().FindOneByBlogUuid(ctx, blogId).Return(pageViewsModel, nil)
 	actual, actualErr = logicService.GetPageViews(getPageViews)
 	assert.Equal(t, expected, actual)
+	assert.Nil(t, actualErr)
 }
