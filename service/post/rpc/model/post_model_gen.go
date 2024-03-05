@@ -48,9 +48,9 @@ type (
 		Published      sql.NullTime   `db:"published"`
 		Updated        sql.NullTime   `db:"updated"`
 		Url            sql.NullString `db:"url"`
-		Selflink       sql.NullString `db:"selflink"`
+		SelfLink       sql.NullString `db:"self_link"`
 		Title          sql.NullString `db:"title"`
-		Titlelink      sql.NullString `db:"titlelink"`
+		TitleLink      sql.NullString `db:"title_link"`
 		Content        sql.NullString `db:"content"`
 		CustomMetaData sql.NullString `db:"custom_meta_data"`
 		Status         sql.NullString `db:"status"`
@@ -143,7 +143,7 @@ func (m *defaultPostModel) Insert(ctx context.Context, data *Post) (sql.Result, 
 	publicPostUuidKey := fmt.Sprintf("%s%v", cachePublicPostUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)", m.table, postRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.Uuid, data.BlogUuid, data.Published, data.Updated, data.Url, data.Selflink, data.Title, data.Titlelink, data.Content, data.CustomMetaData, data.Status)
+		return conn.ExecCtx(ctx, query, data.Uuid, data.BlogUuid, data.Published, data.Updated, data.Url, data.SelfLink, data.Title, data.TitleLink, data.Content, data.CustomMetaData, data.Status)
 	}, publicPostBlogUuidKey, publicPostIdKey, publicPostUuidKey)
 	return ret, err
 }
@@ -159,7 +159,7 @@ func (m *defaultPostModel) Update(ctx context.Context, newData *Post) error {
 	publicPostUuidKey := fmt.Sprintf("%s%v", cachePublicPostUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, postRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.BlogUuid, newData.Published, newData.Updated, newData.Url, newData.Selflink, newData.Title, newData.Titlelink, newData.Content, newData.CustomMetaData, newData.Status)
+		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.BlogUuid, newData.Published, newData.Updated, newData.Url, newData.SelfLink, newData.Title, newData.TitleLink, newData.Content, newData.CustomMetaData, newData.Status)
 	}, publicPostBlogUuidKey, publicPostIdKey, publicPostUuidKey)
 	return err
 }

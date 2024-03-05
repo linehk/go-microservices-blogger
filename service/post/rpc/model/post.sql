@@ -5,9 +5,9 @@ CREATE TABLE post (
   published TIMESTAMP,
   updated TIMESTAMP,
   url VARCHAR,
-  selfLink VARCHAR,
+  self_link VARCHAR,
   title VARCHAR,
-  titleLink VARCHAR,
+  title_link VARCHAR,
   content VARCHAR,
   custom_meta_data VARCHAR,
   status VARCHAR
