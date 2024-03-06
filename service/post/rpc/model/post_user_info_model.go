@@ -17,7 +17,7 @@ type (
 	// and implement the added methods in customPostUserInfoModel.
 	PostUserInfoModel interface {
 		postUserInfoModel
-		GetPostUserInfos(ctx context.Context, userUuid, blogUuid, postUuid string) (*PostUserInfo, error)
+		FindOneByUserUuidAndBlogUuidAndPostUuid(ctx context.Context, userUuid, blogUuid, postUuid string) (*PostUserInfo, error)
 	}
 
 	customPostUserInfoModel struct {
@@ -36,7 +36,7 @@ var (
 	cachePublicPostUserInfoUserUuidBlogUuidPostUuid = "cache:public:postUserInfo:userUuid:%s:blogUuid:%s:postUuid:%s"
 )
 
-func (c *customPostUserInfoModel) GetPostUserInfos(ctx context.Context, userUuid, blogUuid, postUuid string) (*PostUserInfo, error) {
+func (c *customPostUserInfoModel) FindOneByUserUuidAndBlogUuidAndPostUuid(ctx context.Context, userUuid, blogUuid, postUuid string) (*PostUserInfo, error) {
 	publicPostUserInfoBlogUuidKey := fmt.Sprintf(cachePublicPostUserInfoUserUuidBlogUuidPostUuid, userUuid, blogUuid, postUuid)
 	var resp PostUserInfo
 	err := c.QueryRowIndexCtx(ctx, &resp, publicPostUserInfoBlogUuidKey, c.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
