@@ -41,7 +41,10 @@ func (l *GetLogic) Get(in *blog.GetReq) (*blog.Blog, error) {
 		l.Error(errcode.Msg(errcode.Database))
 		return nil, errcode.Wrap(errcode.Database)
 	}
+	return Get(l.ctx, l.svcCtx, l.Logger, blogModel)
+}
 
+func Get(ctx context.Context, svcCtx *svc.ServiceContext, l logx.Logger, blogModel *model.Blog) (*blog.Blog, error) {
 	var blogResp blog.Blog
 	convert.Copy(&blogResp, blogModel)
 	blogResp.Kind = "blogger#blog"
@@ -56,7 +59,7 @@ func (l *GetLogic) Get(in *blog.GetReq) (*blog.Blog, error) {
 	listPostReq := &post.ListReq{
 		BlogId: blogModel.Uuid,
 	}
-	listPostResp, err := l.svcCtx.PostService.List(l.ctx, listPostReq)
+	listPostResp, err := svcCtx.PostService.List(ctx, listPostReq)
 	if err != nil {
 		l.Error(errcode.Msg(errcode.Service))
 		return nil, errcode.Wrap(errcode.Service)
@@ -69,7 +72,7 @@ func (l *GetLogic) Get(in *blog.GetReq) (*blog.Blog, error) {
 	listPageReq := &page.ListReq{
 		BlogId: blogModel.Uuid,
 	}
-	listPageResp, err := l.svcCtx.PageService.List(l.ctx, listPageReq)
+	listPageResp, err := svcCtx.PageService.List(ctx, listPageReq)
 	if err != nil {
 		l.Error(errcode.Msg(errcode.Service))
 		return nil, errcode.Wrap(errcode.Service)
@@ -78,6 +81,5 @@ func (l *GetLogic) Get(in *blog.GetReq) (*blog.Blog, error) {
 	for _, pageItem := range listPageResp.GetItems() {
 		blogResp.Pages = append(blogResp.Pages, &blog.Pages{TotalItems: pageTotalItems, SelfLink: pageItem.GetSelfLink()})
 	}
-
 	return &blogResp, nil
 }

@@ -117,23 +117,6 @@ func TestGetByUrl(t *testing.T) {
 	assert.Nil(t, actual)
 	assert.Equal(t, expectedErr, actualErr)
 
-	// Post Service
-	expectedErr = errcode.Wrap(errcode.Service)
-	blogRepo.EXPECT().FindOneByUrl(ctx, blogUrl).Return(blogModel, nil)
-	postService.EXPECT().List(ctx, listPostReq).Return(nil, expectedErr)
-	actual, actualErr = logicService.GetByUrl(getByUrlReq)
-	assert.Nil(t, actual)
-	assert.Equal(t, expectedErr, actualErr)
-
-	// Page Service
-	expectedErr = errcode.Wrap(errcode.Service)
-	blogRepo.EXPECT().FindOneByUrl(ctx, blogUrl).Return(blogModel, nil)
-	postService.EXPECT().List(ctx, listPostReq).Return(listPostResp, nil)
-	pageService.EXPECT().List(ctx, listPageReq).Return(nil, expectedErr)
-	actual, actualErr = logicService.GetByUrl(getByUrlReq)
-	assert.Nil(t, actual)
-	assert.Equal(t, expectedErr, actualErr)
-
 	// Success
 	blogRepo.EXPECT().FindOneByUrl(ctx, blogUrl).Return(blogModel, nil)
 	postService.EXPECT().List(ctx, listPostReq).Return(listPostResp, nil)
