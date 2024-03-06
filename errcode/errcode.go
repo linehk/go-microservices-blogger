@@ -17,12 +17,11 @@ const (
 	PageViewNotExist     uint32 = 40002
 
 	PostNotExist          uint32 = 50000
-	PostNotBelongToBlog   uint32 = 50001
-	ImageNotExist         uint32 = 50002
-	AuthorNotExist        uint32 = 50003
-	LabelNotExist         uint32 = 50004
-	LocationNotExist      uint32 = 50005
-	PostUserInfosNotExist uint32 = 50006
+	ImageNotExist         uint32 = 50001
+	AuthorNotExist        uint32 = 50002
+	LabelNotExist         uint32 = 50003
+	LocationNotExist      uint32 = 50004
+	PostUserInfosNotExist uint32 = 50005
 )
 
 var msg = map[uint32]string{
@@ -37,7 +36,6 @@ var msg = map[uint32]string{
 	PageViewNotExist:     "page view not exist",
 
 	PostNotExist:          "post not exist",
-	PostNotBelongToBlog:   "post not belong to blog",
 	ImageNotExist:         "image not exist",
 	AuthorNotExist:        "author not exist",
 	LabelNotExist:         "label not exist",

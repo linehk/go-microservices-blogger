@@ -275,28 +275,21 @@ func TestGet(t *testing.T) {
 
 	// PostNotExist
 	expectedErr := errcode.Wrap(errcode.PostNotExist)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(nil, model.ErrNotFound)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(nil, model.ErrNotFound)
 	actual, actualErr := logicService.Get(getReq)
 	assert.Nil(t, actual)
 	assert.Equal(t, expectedErr, actualErr)
 
 	// Database
 	expectedErr = errcode.Wrap(errcode.Database)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(nil, expectedErr)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(nil, expectedErr)
 	actual, actualErr = logicService.Get(getReq)
-	assert.Nil(t, actual)
-	assert.Equal(t, expectedErr, actualErr)
-
-	// PostNotBelongToBlog
-	expectedErr = errcode.Wrap(errcode.PostNotBelongToBlog)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
-	actual, actualErr = logicService.Get(&post.GetReq{BlogId: uuid.NewString(), PostId: postId})
 	assert.Nil(t, actual)
 	assert.Equal(t, expectedErr, actualErr)
 
 	// ImageNotExist
 	expectedErr = errcode.Wrap(errcode.ImageNotExist)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(nil, model.ErrNotFound)
 	actual, actualErr = logicService.Get(getReq)
 	assert.Nil(t, actual)
@@ -304,7 +297,7 @@ func TestGet(t *testing.T) {
 
 	// Database
 	expectedErr = errcode.Wrap(errcode.Database)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(nil, expectedErr)
 	actual, actualErr = logicService.Get(getReq)
 	assert.Nil(t, actual)
@@ -312,7 +305,7 @@ func TestGet(t *testing.T) {
 
 	// AuthorNotExist
 	expectedErr = errcode.Wrap(errcode.AuthorNotExist)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(nil, model.ErrNotFound)
 	actual, actualErr = logicService.Get(getReq)
@@ -321,7 +314,7 @@ func TestGet(t *testing.T) {
 
 	// Database
 	expectedErr = errcode.Wrap(errcode.Database)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(nil, expectedErr)
 	actual, actualErr = logicService.Get(getReq)
@@ -330,7 +323,7 @@ func TestGet(t *testing.T) {
 
 	// author ImageNotExist
 	expectedErr = errcode.Wrap(errcode.ImageNotExist)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(authorModel, nil)
 	imageRepo.EXPECT().FindOneByAuthorUuid(ctx, authorUuid).Return(nil, model.ErrNotFound)
@@ -340,7 +333,7 @@ func TestGet(t *testing.T) {
 
 	// Database
 	expectedErr = errcode.Wrap(errcode.Database)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(authorModel, nil)
 	imageRepo.EXPECT().FindOneByAuthorUuid(ctx, authorUuid).Return(nil, expectedErr)
@@ -350,7 +343,7 @@ func TestGet(t *testing.T) {
 
 	// Service
 	expectedErr = errcode.Wrap(errcode.Service)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(authorModel, nil)
 	imageRepo.EXPECT().FindOneByAuthorUuid(ctx, authorUuid).Return(authorImageModel, nil)
@@ -361,7 +354,7 @@ func TestGet(t *testing.T) {
 
 	// LabelNotExist
 	expectedErr = errcode.Wrap(errcode.LabelNotExist)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(authorModel, nil)
 	imageRepo.EXPECT().FindOneByAuthorUuid(ctx, authorUuid).Return(authorImageModel, nil)
@@ -373,7 +366,7 @@ func TestGet(t *testing.T) {
 
 	// Database
 	expectedErr = errcode.Wrap(errcode.Database)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(authorModel, nil)
 	imageRepo.EXPECT().FindOneByAuthorUuid(ctx, authorUuid).Return(authorImageModel, nil)
@@ -385,7 +378,7 @@ func TestGet(t *testing.T) {
 
 	// LocationNotExist
 	expectedErr = errcode.Wrap(errcode.LocationNotExist)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(authorModel, nil)
 	imageRepo.EXPECT().FindOneByAuthorUuid(ctx, authorUuid).Return(authorImageModel, nil)
@@ -398,7 +391,7 @@ func TestGet(t *testing.T) {
 
 	// Database
 	expectedErr = errcode.Wrap(errcode.Database)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(authorModel, nil)
 	imageRepo.EXPECT().FindOneByAuthorUuid(ctx, authorUuid).Return(authorImageModel, nil)
@@ -410,7 +403,7 @@ func TestGet(t *testing.T) {
 	assert.Equal(t, expectedErr, actualErr)
 
 	// Success
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)
 	authorRepo.EXPECT().FindOneByPostUuid(ctx, postId).Return(authorModel, nil)
 	imageRepo.EXPECT().FindOneByAuthorUuid(ctx, authorUuid).Return(authorImageModel, nil)

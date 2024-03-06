@@ -30,7 +30,7 @@ func NewGetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetLogic {
 }
 
 func (l *GetLogic) Get(in *post.GetReq) (*post.Post, error) {
-	postModel, err := l.svcCtx.PostModel.FindOneByUuid(l.ctx, in.GetPostId())
+	postModel, err := l.svcCtx.PostModel.FindOneByBlogUuidAndPostUuid(l.ctx, in.GetBlogId(), in.GetPostId())
 	if errors.Is(err, model.ErrNotFound) {
 		l.Error(errcode.Msg(errcode.PostNotExist))
 		return nil, errcode.Wrap(errcode.PostNotExist)
@@ -39,11 +39,10 @@ func (l *GetLogic) Get(in *post.GetReq) (*post.Post, error) {
 		l.Error(errcode.Msg(errcode.Database))
 		return nil, errcode.Wrap(errcode.Database)
 	}
-	if postModel.BlogUuid != in.GetBlogId() {
-		l.Error(errcode.Msg(errcode.PostNotBelongToBlog))
-		return nil, errcode.Wrap(errcode.PostNotBelongToBlog)
-	}
+	return Get(l.ctx, l.svcCtx, l.Logger, postModel)
+}
 
+func Get(ctx context.Context, svcCtx *svc.ServiceContext, l logx.Logger, postModel *model.Post) (*post.Post, error) {
 	var postResp post.Post
 	convert.Copy(&postResp, postModel)
 	postResp.Kind = "blogger#post"
@@ -56,7 +55,7 @@ func (l *GetLogic) Get(in *post.GetReq) (*post.Post, error) {
 		postResp.Updated = timestamppb.New(postModel.Updated.Time)
 	}
 
-	imageModelList, err := l.svcCtx.ImageModel.ListByPostUuid(l.ctx, in.GetPostId())
+	imageModelList, err := svcCtx.ImageModel.ListByPostUuid(ctx, postModel.Uuid)
 	if errors.Is(err, model.ErrNotFound) {
 		l.Error(errcode.Msg(errcode.ImageNotExist))
 		return nil, errcode.Wrap(errcode.ImageNotExist)
@@ -72,7 +71,7 @@ func (l *GetLogic) Get(in *post.GetReq) (*post.Post, error) {
 		}
 	}
 
-	authorModel, err := l.svcCtx.AuthorModel.FindOneByPostUuid(l.ctx, in.GetPostId())
+	authorModel, err := svcCtx.AuthorModel.FindOneByPostUuid(ctx, postModel.Uuid)
 	if errors.Is(err, model.ErrNotFound) {
 		l.Error(errcode.Msg(errcode.AuthorNotExist))
 		return nil, errcode.Wrap(errcode.AuthorNotExist)
@@ -85,7 +84,7 @@ func (l *GetLogic) Get(in *post.GetReq) (*post.Post, error) {
 	postResp.Author = &post.Author{}
 	convert.Copy(postResp.Author, authorModel)
 	postResp.Author.Id = authorModel.Uuid
-	authorImageModel, err := l.svcCtx.ImageModel.FindOneByAuthorUuid(l.ctx, authorModel.Uuid)
+	authorImageModel, err := svcCtx.ImageModel.FindOneByAuthorUuid(ctx, authorModel.Uuid)
 	if errors.Is(err, model.ErrNotFound) {
 		l.Error(errcode.Msg(errcode.ImageNotExist))
 		return nil, errcode.Wrap(errcode.ImageNotExist)
@@ -99,10 +98,10 @@ func (l *GetLogic) Get(in *post.GetReq) (*post.Post, error) {
 	}
 
 	listCommentReq := &comment.ListReq{
-		BlogId: in.GetBlogId(),
-		PostId: in.GetPostId(),
+		BlogId: postModel.BlogUuid,
+		PostId: postModel.Uuid,
 	}
-	listCommentResp, err := l.svcCtx.CommentService.List(l.ctx, listCommentReq)
+	listCommentResp, err := svcCtx.CommentService.List(ctx, listCommentReq)
 	if err != nil {
 		l.Error(errcode.Msg(errcode.Service))
 		return nil, errcode.Wrap(errcode.Service)
@@ -116,7 +115,7 @@ func (l *GetLogic) Get(in *post.GetReq) (*post.Post, error) {
 		postResp.Replies.Items = append(postResp.Replies.Items, &repliesItem)
 	}
 
-	labelModelList, err := l.svcCtx.LabelModel.ListByPostUuid(l.ctx, in.GetPostId())
+	labelModelList, err := svcCtx.LabelModel.ListByPostUuid(ctx, postModel.Uuid)
 	if errors.Is(err, model.ErrNotFound) {
 		l.Error(errcode.Msg(errcode.LabelNotExist))
 		return nil, errcode.Wrap(errcode.LabelNotExist)
@@ -131,7 +130,7 @@ func (l *GetLogic) Get(in *post.GetReq) (*post.Post, error) {
 		}
 	}
 
-	locationModel, err := l.svcCtx.LocationModel.FindOneByPostUuid(l.ctx, in.GetPostId())
+	locationModel, err := svcCtx.LocationModel.FindOneByPostUuid(ctx, postModel.Uuid)
 	if errors.Is(err, model.ErrNotFound) {
 		l.Error(errcode.Msg(errcode.LocationNotExist))
 		return nil, errcode.Wrap(errcode.LocationNotExist)

@@ -61,35 +61,28 @@ func TestDelete(t *testing.T) {
 
 	// PostNotExist
 	expectedErr := errcode.Wrap(errcode.PostNotExist)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(nil, model.ErrNotFound)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(nil, model.ErrNotFound)
 	actual, actualErr := logicService.Delete(deleteReq)
 	assert.Nil(t, actual)
 	assert.Equal(t, expectedErr, actualErr)
 
 	// Database
 	expectedErr = errcode.Wrap(errcode.Database)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(nil, expectedErr)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(nil, expectedErr)
 	actual, actualErr = logicService.Delete(deleteReq)
-	assert.Nil(t, actual)
-	assert.Equal(t, expectedErr, actualErr)
-
-	// PostNotBelongToBlog
-	expectedErr = errcode.Wrap(errcode.PostNotBelongToBlog)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
-	actual, actualErr = logicService.Delete(&post.DeleteReq{BlogId: uuid.NewString(), PostId: postId})
 	assert.Nil(t, actual)
 	assert.Equal(t, expectedErr, actualErr)
 
 	// Database
 	expectedErr = errcode.Wrap(errcode.Database)
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	postRepo.EXPECT().Delete(ctx, postPrimaryKey).Return(expectedErr)
 	actual, actualErr = logicService.Delete(deleteReq)
 	assert.Nil(t, actual)
 	assert.Equal(t, expectedErr, actualErr)
 
 	// Success
-	postRepo.EXPECT().FindOneByUuid(ctx, postId).Return(postModel, nil)
+	postRepo.EXPECT().FindOneByBlogUuidAndPostUuid(ctx, blogId, postId).Return(postModel, nil)
 	postRepo.EXPECT().Delete(ctx, postPrimaryKey).Return(nil)
 	actual, actualErr = logicService.Delete(deleteReq)
 	assert.Equal(t, expected, actual)

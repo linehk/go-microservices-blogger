@@ -129,6 +129,21 @@ func (mr *MockPostUserInfoModelMockRecorder) FindOneByUuid(arg0, arg1 any) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByUuid", reflect.TypeOf((*MockPostUserInfoModel)(nil).FindOneByUuid), arg0, arg1)
 }
 
+// GetPostUserInfos mocks base method.
+func (m *MockPostUserInfoModel) GetPostUserInfos(arg0 context.Context, arg1, arg2, arg3 string) (*PostUserInfo, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPostUserInfos", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(*PostUserInfo)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetPostUserInfos indicates an expected call of GetPostUserInfos.
+func (mr *MockPostUserInfoModelMockRecorder) GetPostUserInfos(arg0, arg1, arg2, arg3 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPostUserInfos", reflect.TypeOf((*MockPostUserInfoModel)(nil).GetPostUserInfos), arg0, arg1, arg2, arg3)
+}
+
 // Insert mocks base method.
 func (m *MockPostUserInfoModel) Insert(arg0 context.Context, arg1 *PostUserInfo) (sql.Result, error) {
 	m.ctrl.T.Helper()
