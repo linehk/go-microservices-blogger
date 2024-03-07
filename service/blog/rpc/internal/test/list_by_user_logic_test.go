@@ -50,7 +50,7 @@ func TestListByUser(t *testing.T) {
 		{
 			Id:             1,
 			Uuid:           blogId1,
-			AppUserUuid:    userId,
+			AppUserUuid:    sql.NullString{String: userId, Valid: true},
 			Name:           sql.NullString{String: name, Valid: true},
 			Description:    sql.NullString{String: description, Valid: true},
 			Published:      sql.NullTime{Time: published, Valid: true},
@@ -62,7 +62,7 @@ func TestListByUser(t *testing.T) {
 		{
 			Id:             2,
 			Uuid:           blogId2,
-			AppUserUuid:    userId,
+			AppUserUuid:    sql.NullString{String: userId, Valid: true},
 			Name:           sql.NullString{String: name, Valid: true},
 			Description:    sql.NullString{String: description, Valid: true},
 			Published:      sql.NullTime{Time: published, Valid: true},

@@ -21,18 +21,14 @@ var (
 	commentRowsExpectAutoSet   = strings.Join(stringx.Remove(commentFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
 	commentRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(commentFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cachePublicCommentIdPrefix       = "cache:public:comment:id:"
-	cachePublicCommentBlogUuidPrefix = "cache:public:comment:blogUuid:"
-	cachePublicCommentPostUuidPrefix = "cache:public:comment:postUuid:"
-	cachePublicCommentUuidPrefix     = "cache:public:comment:uuid:"
+	cachePublicCommentIdPrefix   = "cache:public:comment:id:"
+	cachePublicCommentUuidPrefix = "cache:public:comment:uuid:"
 )
 
 type (
 	commentModel interface {
 		Insert(ctx context.Context, data *Comment) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Comment, error)
-		FindOneByBlogUuid(ctx context.Context, blogUuid string) (*Comment, error)
-		FindOneByPostUuid(ctx context.Context, postUuid string) (*Comment, error)
 		FindOneByUuid(ctx context.Context, uuid string) (*Comment, error)
 		Update(ctx context.Context, data *Comment) error
 		Delete(ctx context.Context, id int64) error
@@ -46,8 +42,8 @@ type (
 	Comment struct {
 		Id        int64          `db:"id"`
 		Uuid      string         `db:"uuid"`
-		BlogUuid  string         `db:"blog_uuid"`
-		PostUuid  string         `db:"post_uuid"`
+		BlogUuid  sql.NullString `db:"blog_uuid"`
+		PostUuid  sql.NullString `db:"post_uuid"`
 		Status    sql.NullString `db:"status"`
 		Published sql.NullTime   `db:"published"`
 		Updated   sql.NullTime   `db:"updated"`
@@ -69,14 +65,12 @@ func (m *defaultCommentModel) Delete(ctx context.Context, id int64) error {
 		return err
 	}
 
-	publicCommentBlogUuidKey := fmt.Sprintf("%s%v", cachePublicCommentBlogUuidPrefix, data.BlogUuid)
 	publicCommentIdKey := fmt.Sprintf("%s%v", cachePublicCommentIdPrefix, id)
-	publicCommentPostUuidKey := fmt.Sprintf("%s%v", cachePublicCommentPostUuidPrefix, data.PostUuid)
 	publicCommentUuidKey := fmt.Sprintf("%s%v", cachePublicCommentUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where id = $1", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, publicCommentBlogUuidKey, publicCommentIdKey, publicCommentPostUuidKey, publicCommentUuidKey)
+	}, publicCommentIdKey, publicCommentUuidKey)
 	return err
 }
 
@@ -87,46 +81,6 @@ func (m *defaultCommentModel) FindOne(ctx context.Context, id int64) (*Comment, 
 		query := fmt.Sprintf("select %s from %s where id = $1 limit 1", commentRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, id)
 	})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultCommentModel) FindOneByBlogUuid(ctx context.Context, blogUuid string) (*Comment, error) {
-	publicCommentBlogUuidKey := fmt.Sprintf("%s%v", cachePublicCommentBlogUuidPrefix, blogUuid)
-	var resp Comment
-	err := m.QueryRowIndexCtx(ctx, &resp, publicCommentBlogUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where blog_uuid = $1 limit 1", commentRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultCommentModel) FindOneByPostUuid(ctx context.Context, postUuid string) (*Comment, error) {
-	publicCommentPostUuidKey := fmt.Sprintf("%s%v", cachePublicCommentPostUuidPrefix, postUuid)
-	var resp Comment
-	err := m.QueryRowIndexCtx(ctx, &resp, publicCommentPostUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where post_uuid = $1 limit 1", commentRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, postUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -158,14 +112,12 @@ func (m *defaultCommentModel) FindOneByUuid(ctx context.Context, uuid string) (*
 }
 
 func (m *defaultCommentModel) Insert(ctx context.Context, data *Comment) (sql.Result, error) {
-	publicCommentBlogUuidKey := fmt.Sprintf("%s%v", cachePublicCommentBlogUuidPrefix, data.BlogUuid)
 	publicCommentIdKey := fmt.Sprintf("%s%v", cachePublicCommentIdPrefix, data.Id)
-	publicCommentPostUuidKey := fmt.Sprintf("%s%v", cachePublicCommentPostUuidPrefix, data.PostUuid)
 	publicCommentUuidKey := fmt.Sprintf("%s%v", cachePublicCommentUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8)", m.table, commentRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.Uuid, data.BlogUuid, data.PostUuid, data.Status, data.Published, data.Updated, data.Selflink, data.Content)
-	}, publicCommentBlogUuidKey, publicCommentIdKey, publicCommentPostUuidKey, publicCommentUuidKey)
+	}, publicCommentIdKey, publicCommentUuidKey)
 	return ret, err
 }
 
@@ -175,14 +127,12 @@ func (m *defaultCommentModel) Update(ctx context.Context, newData *Comment) erro
 		return err
 	}
 
-	publicCommentBlogUuidKey := fmt.Sprintf("%s%v", cachePublicCommentBlogUuidPrefix, data.BlogUuid)
 	publicCommentIdKey := fmt.Sprintf("%s%v", cachePublicCommentIdPrefix, data.Id)
-	publicCommentPostUuidKey := fmt.Sprintf("%s%v", cachePublicCommentPostUuidPrefix, data.PostUuid)
 	publicCommentUuidKey := fmt.Sprintf("%s%v", cachePublicCommentUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, commentRowsWithPlaceHolder)
 		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.BlogUuid, newData.PostUuid, newData.Status, newData.Published, newData.Updated, newData.Selflink, newData.Content)
-	}, publicCommentBlogUuidKey, publicCommentIdKey, publicCommentPostUuidKey, publicCommentUuidKey)
+	}, publicCommentIdKey, publicCommentUuidKey)
 	return err
 }
 

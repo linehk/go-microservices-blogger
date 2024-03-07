@@ -1,7 +1,7 @@
 CREATE TABLE post (
   id SERIAL PRIMARY KEY,
   uuid VARCHAR UNIQUE NOT NULL,
-  blog_uuid VARCHAR UNIQUE NOT NULL,
+  blog_uuid VARCHAR,
   published TIMESTAMP,
   updated TIMESTAMP,
   url VARCHAR UNIQUE NOT NULL,
@@ -26,14 +26,14 @@ CREATE TABLE location (
 CREATE TABLE label (
   id SERIAL PRIMARY KEY,
   uuid VARCHAR UNIQUE NOT NULL,
-  post_uuid VARCHAR UNIQUE NOT NULL,
+  post_uuid VARCHAR,
   label_value VARCHAR
 );
 
 CREATE TABLE image (
   id SERIAL PRIMARY KEY,
   uuid VARCHAR UNIQUE NOT NULL,
-  post_uuid VARCHAR UNIQUE NOT NULL,
+  post_uuid VARCHAR,
   author_uuid VARCHAR UNIQUE NOT NULL,
   url VARCHAR
 );
@@ -41,9 +41,9 @@ CREATE TABLE image (
 CREATE TABLE post_user_info (
   id SERIAL PRIMARY KEY,
   uuid VARCHAR UNIQUE NOT NULL,
-  user_uuid VARCHAR UNIQUE NOT NULL,
-  blog_uuid VARCHAR UNIQUE NOT NULL,
-  post_uuid VARCHAR UNIQUE NOT NULL,
+  user_uuid VARCHAR,
+  blog_uuid VARCHAR,
+  post_uuid VARCHAR,
   has_edit_access BOOLEAN
 );
 

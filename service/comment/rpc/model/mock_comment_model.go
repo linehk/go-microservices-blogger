@@ -69,36 +69,6 @@ func (mr *MockCommentModelMockRecorder) FindOne(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockCommentModel)(nil).FindOne), arg0, arg1)
 }
 
-// FindOneByBlogUuid mocks base method.
-func (m *MockCommentModel) FindOneByBlogUuid(arg0 context.Context, arg1 string) (*Comment, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOneByBlogUuid", arg0, arg1)
-	ret0, _ := ret[0].(*Comment)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindOneByBlogUuid indicates an expected call of FindOneByBlogUuid.
-func (mr *MockCommentModelMockRecorder) FindOneByBlogUuid(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByBlogUuid", reflect.TypeOf((*MockCommentModel)(nil).FindOneByBlogUuid), arg0, arg1)
-}
-
-// FindOneByPostUuid mocks base method.
-func (m *MockCommentModel) FindOneByPostUuid(arg0 context.Context, arg1 string) (*Comment, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOneByPostUuid", arg0, arg1)
-	ret0, _ := ret[0].(*Comment)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindOneByPostUuid indicates an expected call of FindOneByPostUuid.
-func (mr *MockCommentModelMockRecorder) FindOneByPostUuid(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByPostUuid", reflect.TypeOf((*MockCommentModel)(nil).FindOneByPostUuid), arg0, arg1)
-}
-
 // FindOneByUuid mocks base method.
 func (m *MockCommentModel) FindOneByUuid(arg0 context.Context, arg1 string) (*Comment, error) {
 	m.ctrl.T.Helper()

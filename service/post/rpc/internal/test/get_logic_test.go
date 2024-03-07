@@ -57,7 +57,7 @@ func TestGet(t *testing.T) {
 	postModel := &model.Post{
 		Id:             1,
 		Uuid:           postId,
-		BlogUuid:       blogId,
+		BlogUuid:       sql.NullString{String: blogId, Valid: true},
 		Published:      sql.NullTime{Time: published, Valid: true},
 		Updated:        sql.NullTime{Time: updated, Valid: true},
 		Url:            postUrl,
@@ -78,13 +78,13 @@ func TestGet(t *testing.T) {
 		{
 			Id:         1,
 			Uuid:       imageUuid1,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			AuthorUuid: authorUuid,
 			Url:        sql.NullString{String: imageUrl1, Valid: true},
 		}, {
 			Id:         2,
 			Uuid:       imageUuid2,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			AuthorUuid: authorUuid,
 			Url:        sql.NullString{String: imageUrl2, Valid: true},
 		},
@@ -110,7 +110,7 @@ func TestGet(t *testing.T) {
 	authorImageModel := &model.Image{
 		Id:         1,
 		Uuid:       authorImageUuid,
-		PostUuid:   postId,
+		PostUuid:   sql.NullString{String: postId, Valid: true},
 		AuthorUuid: authorUuid,
 		Url:        sql.NullString{String: authorImageUrl, Valid: true},
 	}
@@ -180,12 +180,12 @@ func TestGet(t *testing.T) {
 		{
 			Id:         1,
 			Uuid:       labelUuid1,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			LabelValue: sql.NullString{String: labelValue1, Valid: true},
 		}, {
 			Id:         2,
 			Uuid:       labelUuid2,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			LabelValue: sql.NullString{String: labelValue2, Valid: true},
 		},
 	}

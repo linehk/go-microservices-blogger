@@ -21,16 +21,14 @@ var (
 	pageRowsExpectAutoSet   = strings.Join(stringx.Remove(pageFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
 	pageRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(pageFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cachePublicPageIdPrefix       = "cache:public:page:id:"
-	cachePublicPageBlogUuidPrefix = "cache:public:page:blogUuid:"
-	cachePublicPageUuidPrefix     = "cache:public:page:uuid:"
+	cachePublicPageIdPrefix   = "cache:public:page:id:"
+	cachePublicPageUuidPrefix = "cache:public:page:uuid:"
 )
 
 type (
 	pageModel interface {
 		Insert(ctx context.Context, data *Page) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Page, error)
-		FindOneByBlogUuid(ctx context.Context, blogUuid string) (*Page, error)
 		FindOneByUuid(ctx context.Context, uuid string) (*Page, error)
 		Update(ctx context.Context, data *Page) error
 		Delete(ctx context.Context, id int64) error
@@ -44,7 +42,7 @@ type (
 	Page struct {
 		Id        int64          `db:"id"`
 		Uuid      string         `db:"uuid"`
-		BlogUuid  string         `db:"blog_uuid"`
+		BlogUuid  sql.NullString `db:"blog_uuid"`
 		Status    sql.NullString `db:"status"`
 		Published sql.NullTime   `db:"published"`
 		Updated   sql.NullTime   `db:"updated"`
@@ -68,13 +66,12 @@ func (m *defaultPageModel) Delete(ctx context.Context, id int64) error {
 		return err
 	}
 
-	publicPageBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPageBlogUuidPrefix, data.BlogUuid)
 	publicPageIdKey := fmt.Sprintf("%s%v", cachePublicPageIdPrefix, id)
 	publicPageUuidKey := fmt.Sprintf("%s%v", cachePublicPageUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where id = $1", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, publicPageBlogUuidKey, publicPageIdKey, publicPageUuidKey)
+	}, publicPageIdKey, publicPageUuidKey)
 	return err
 }
 
@@ -85,26 +82,6 @@ func (m *defaultPageModel) FindOne(ctx context.Context, id int64) (*Page, error)
 		query := fmt.Sprintf("select %s from %s where id = $1 limit 1", pageRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, id)
 	})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultPageModel) FindOneByBlogUuid(ctx context.Context, blogUuid string) (*Page, error) {
-	publicPageBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPageBlogUuidPrefix, blogUuid)
-	var resp Page
-	err := m.QueryRowIndexCtx(ctx, &resp, publicPageBlogUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where blog_uuid = $1 limit 1", pageRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -136,13 +113,12 @@ func (m *defaultPageModel) FindOneByUuid(ctx context.Context, uuid string) (*Pag
 }
 
 func (m *defaultPageModel) Insert(ctx context.Context, data *Page) (sql.Result, error) {
-	publicPageBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPageBlogUuidPrefix, data.BlogUuid)
 	publicPageIdKey := fmt.Sprintf("%s%v", cachePublicPageIdPrefix, data.Id)
 	publicPageUuidKey := fmt.Sprintf("%s%v", cachePublicPageUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)", m.table, pageRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.Uuid, data.BlogUuid, data.Status, data.Published, data.Updated, data.Url, data.Selflink, data.Title, data.Content)
-	}, publicPageBlogUuidKey, publicPageIdKey, publicPageUuidKey)
+	}, publicPageIdKey, publicPageUuidKey)
 	return ret, err
 }
 
@@ -152,13 +128,12 @@ func (m *defaultPageModel) Update(ctx context.Context, newData *Page) error {
 		return err
 	}
 
-	publicPageBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPageBlogUuidPrefix, data.BlogUuid)
 	publicPageIdKey := fmt.Sprintf("%s%v", cachePublicPageIdPrefix, data.Id)
 	publicPageUuidKey := fmt.Sprintf("%s%v", cachePublicPageUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, pageRowsWithPlaceHolder)
 		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.BlogUuid, newData.Status, newData.Published, newData.Updated, newData.Url, newData.Selflink, newData.Title, newData.Content)
-	}, publicPageBlogUuidKey, publicPageIdKey, publicPageUuidKey)
+	}, publicPageIdKey, publicPageUuidKey)
 	return err
 }
 

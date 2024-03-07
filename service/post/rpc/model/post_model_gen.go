@@ -21,17 +21,15 @@ var (
 	postRowsExpectAutoSet   = strings.Join(stringx.Remove(postFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
 	postRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(postFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cachePublicPostIdPrefix       = "cache:public:post:id:"
-	cachePublicPostBlogUuidPrefix = "cache:public:post:blogUuid:"
-	cachePublicPostUrlPrefix      = "cache:public:post:url:"
-	cachePublicPostUuidPrefix     = "cache:public:post:uuid:"
+	cachePublicPostIdPrefix   = "cache:public:post:id:"
+	cachePublicPostUrlPrefix  = "cache:public:post:url:"
+	cachePublicPostUuidPrefix = "cache:public:post:uuid:"
 )
 
 type (
 	postModel interface {
 		Insert(ctx context.Context, data *Post) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Post, error)
-		FindOneByBlogUuid(ctx context.Context, blogUuid string) (*Post, error)
 		FindOneByUrl(ctx context.Context, url string) (*Post, error)
 		FindOneByUuid(ctx context.Context, uuid string) (*Post, error)
 		Update(ctx context.Context, data *Post) error
@@ -46,7 +44,7 @@ type (
 	Post struct {
 		Id             int64          `db:"id"`
 		Uuid           string         `db:"uuid"`
-		BlogUuid       string         `db:"blog_uuid"`
+		BlogUuid       sql.NullString `db:"blog_uuid"`
 		Published      sql.NullTime   `db:"published"`
 		Updated        sql.NullTime   `db:"updated"`
 		Url            string         `db:"url"`
@@ -72,14 +70,13 @@ func (m *defaultPostModel) Delete(ctx context.Context, id int64) error {
 		return err
 	}
 
-	publicPostBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPostBlogUuidPrefix, data.BlogUuid)
 	publicPostIdKey := fmt.Sprintf("%s%v", cachePublicPostIdPrefix, id)
 	publicPostUrlKey := fmt.Sprintf("%s%v", cachePublicPostUrlPrefix, data.Url)
 	publicPostUuidKey := fmt.Sprintf("%s%v", cachePublicPostUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where id = $1", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, publicPostBlogUuidKey, publicPostIdKey, publicPostUrlKey, publicPostUuidKey)
+	}, publicPostIdKey, publicPostUrlKey, publicPostUuidKey)
 	return err
 }
 
@@ -90,26 +87,6 @@ func (m *defaultPostModel) FindOne(ctx context.Context, id int64) (*Post, error)
 		query := fmt.Sprintf("select %s from %s where id = $1 limit 1", postRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, id)
 	})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultPostModel) FindOneByBlogUuid(ctx context.Context, blogUuid string) (*Post, error) {
-	publicPostBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPostBlogUuidPrefix, blogUuid)
-	var resp Post
-	err := m.QueryRowIndexCtx(ctx, &resp, publicPostBlogUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where blog_uuid = $1 limit 1", postRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -161,14 +138,13 @@ func (m *defaultPostModel) FindOneByUuid(ctx context.Context, uuid string) (*Pos
 }
 
 func (m *defaultPostModel) Insert(ctx context.Context, data *Post) (sql.Result, error) {
-	publicPostBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPostBlogUuidPrefix, data.BlogUuid)
 	publicPostIdKey := fmt.Sprintf("%s%v", cachePublicPostIdPrefix, data.Id)
 	publicPostUrlKey := fmt.Sprintf("%s%v", cachePublicPostUrlPrefix, data.Url)
 	publicPostUuidKey := fmt.Sprintf("%s%v", cachePublicPostUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)", m.table, postRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.Uuid, data.BlogUuid, data.Published, data.Updated, data.Url, data.SelfLink, data.Title, data.TitleLink, data.Content, data.CustomMetaData, data.Status)
-	}, publicPostBlogUuidKey, publicPostIdKey, publicPostUrlKey, publicPostUuidKey)
+	}, publicPostIdKey, publicPostUrlKey, publicPostUuidKey)
 	return ret, err
 }
 
@@ -178,14 +154,13 @@ func (m *defaultPostModel) Update(ctx context.Context, newData *Post) error {
 		return err
 	}
 
-	publicPostBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPostBlogUuidPrefix, data.BlogUuid)
 	publicPostIdKey := fmt.Sprintf("%s%v", cachePublicPostIdPrefix, data.Id)
 	publicPostUrlKey := fmt.Sprintf("%s%v", cachePublicPostUrlPrefix, data.Url)
 	publicPostUuidKey := fmt.Sprintf("%s%v", cachePublicPostUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, postRowsWithPlaceHolder)
 		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.BlogUuid, newData.Published, newData.Updated, newData.Url, newData.SelfLink, newData.Title, newData.TitleLink, newData.Content, newData.CustomMetaData, newData.Status)
-	}, publicPostBlogUuidKey, publicPostIdKey, publicPostUrlKey, publicPostUuidKey)
+	}, publicPostIdKey, publicPostUrlKey, publicPostUuidKey)
 	return err
 }
 

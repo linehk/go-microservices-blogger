@@ -47,7 +47,7 @@ func Get(ctx context.Context, svcCtx *svc.ServiceContext, l logx.Logger, postMod
 	convert.Copy(&postResp, postModel)
 	postResp.Kind = "blogger#post"
 	postResp.Id = postModel.Uuid
-	postResp.Blog = &post.Blog{Id: postModel.BlogUuid}
+	postResp.Blog = &post.Blog{Id: postModel.BlogUuid.String}
 	if postModel.Published.Valid {
 		postResp.Published = timestamppb.New(postModel.Published.Time)
 	}
@@ -98,7 +98,7 @@ func Get(ctx context.Context, svcCtx *svc.ServiceContext, l logx.Logger, postMod
 	}
 
 	listCommentReq := &comment.ListReq{
-		BlogId: postModel.BlogUuid,
+		BlogId: postModel.BlogUuid.String,
 		PostId: postModel.Uuid,
 	}
 	listCommentResp, err := svcCtx.CommentService.List(ctx, listCommentReq)

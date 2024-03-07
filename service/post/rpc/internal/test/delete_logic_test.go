@@ -45,7 +45,7 @@ func TestDelete(t *testing.T) {
 	postModel := &model.Post{
 		Id:             postPrimaryKey,
 		Uuid:           postId,
-		BlogUuid:       blogId,
+		BlogUuid:       sql.NullString{String: blogId, Valid: true},
 		Published:      sql.NullTime{Time: published, Valid: true},
 		Updated:        sql.NullTime{Time: updated, Valid: true},
 		Url:            postUrl,

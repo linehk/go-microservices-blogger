@@ -69,21 +69,6 @@ func (mr *MockBlogModelMockRecorder) FindOne(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockBlogModel)(nil).FindOne), arg0, arg1)
 }
 
-// FindOneByAppUserUuid mocks base method.
-func (m *MockBlogModel) FindOneByAppUserUuid(arg0 context.Context, arg1 string) (*Blog, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOneByAppUserUuid", arg0, arg1)
-	ret0, _ := ret[0].(*Blog)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindOneByAppUserUuid indicates an expected call of FindOneByAppUserUuid.
-func (mr *MockBlogModelMockRecorder) FindOneByAppUserUuid(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByAppUserUuid", reflect.TypeOf((*MockBlogModel)(nil).FindOneByAppUserUuid), arg0, arg1)
-}
-
 // FindOneByUrl mocks base method.
 func (m *MockBlogModel) FindOneByUrl(arg0 context.Context, arg1 string) (*Blog, error) {
 	m.ctrl.T.Helper()

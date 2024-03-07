@@ -42,9 +42,9 @@ func (l *GetPostUserInfosLogic) GetPostUserInfos(in *post.GetPostUserInfosReq) (
 	postUserInfosResp.PostUserInfo = &post.PostUserInfo{}
 	convert.Copy(postUserInfosResp.PostUserInfo, postUserInfosModel)
 	postUserInfosResp.PostUserInfo.Kind = "blogger#postPerUserInfo"
-	postUserInfosResp.PostUserInfo.UserId = postUserInfosModel.UserUuid
-	postUserInfosResp.PostUserInfo.BlogId = postUserInfosModel.BlogUuid
-	postUserInfosResp.PostUserInfo.PostId = postUserInfosModel.PostUuid
+	postUserInfosResp.PostUserInfo.UserId = postUserInfosModel.UserUuid.String
+	postUserInfosResp.PostUserInfo.BlogId = postUserInfosModel.BlogUuid.String
+	postUserInfosResp.PostUserInfo.PostId = postUserInfosModel.PostUuid.String
 
 	postModel, err := l.svcCtx.PostModel.FindOneByBlogUuidAndPostUuid(l.ctx, in.GetBlogId(), in.GetPostId())
 	if errors.Is(err, model.ErrNotFound) {

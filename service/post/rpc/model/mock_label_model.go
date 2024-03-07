@@ -69,21 +69,6 @@ func (mr *MockLabelModelMockRecorder) FindOne(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockLabelModel)(nil).FindOne), arg0, arg1)
 }
 
-// FindOneByPostUuid mocks base method.
-func (m *MockLabelModel) FindOneByPostUuid(arg0 context.Context, arg1 string) (*Label, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOneByPostUuid", arg0, arg1)
-	ret0, _ := ret[0].(*Label)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindOneByPostUuid indicates an expected call of FindOneByPostUuid.
-func (mr *MockLabelModelMockRecorder) FindOneByPostUuid(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByPostUuid", reflect.TypeOf((*MockLabelModel)(nil).FindOneByPostUuid), arg0, arg1)
-}
-
 // FindOneByUuid mocks base method.
 func (m *MockLabelModel) FindOneByUuid(arg0 context.Context, arg1 string) (*Label, error) {
 	m.ctrl.T.Helper()

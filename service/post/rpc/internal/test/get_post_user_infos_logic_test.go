@@ -55,9 +55,9 @@ func TestGetPostUserInfos(t *testing.T) {
 	postUserInfosModel := &model.PostUserInfo{
 		Id:            1,
 		Uuid:          postUserInfosUuid,
-		UserUuid:      userId,
-		BlogUuid:      blogId,
-		PostUuid:      postId,
+		UserUuid:      sql.NullString{String: userId, Valid: true},
+		BlogUuid:      sql.NullString{String: blogId, Valid: true},
+		PostUuid:      sql.NullString{String: postId, Valid: true},
 		HasEditAccess: sql.NullBool{Bool: hasEditAccess, Valid: true},
 	}
 
@@ -73,7 +73,7 @@ func TestGetPostUserInfos(t *testing.T) {
 	postModel := &model.Post{
 		Id:             1,
 		Uuid:           postId,
-		BlogUuid:       blogId,
+		BlogUuid:       sql.NullString{String: blogId, Valid: true},
 		Published:      sql.NullTime{Time: published, Valid: true},
 		Updated:        sql.NullTime{Time: updated, Valid: true},
 		Url:            postUrl,
@@ -94,13 +94,13 @@ func TestGetPostUserInfos(t *testing.T) {
 		{
 			Id:         1,
 			Uuid:       imageUuid1,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			AuthorUuid: authorUuid,
 			Url:        sql.NullString{String: imageUrl1, Valid: true},
 		}, {
 			Id:         2,
 			Uuid:       imageUuid2,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			AuthorUuid: authorUuid,
 			Url:        sql.NullString{String: imageUrl2, Valid: true},
 		},
@@ -126,7 +126,7 @@ func TestGetPostUserInfos(t *testing.T) {
 	authorImageModel := &model.Image{
 		Id:         1,
 		Uuid:       authorImageUuid,
-		PostUuid:   postId,
+		PostUuid:   sql.NullString{String: postId, Valid: true},
 		AuthorUuid: authorUuid,
 		Url:        sql.NullString{String: authorImageUrl, Valid: true},
 	}
@@ -196,12 +196,12 @@ func TestGetPostUserInfos(t *testing.T) {
 		{
 			Id:         1,
 			Uuid:       labelUuid1,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			LabelValue: sql.NullString{String: labelValue1, Valid: true},
 		}, {
 			Id:         2,
 			Uuid:       labelUuid2,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			LabelValue: sql.NullString{String: labelValue2, Valid: true},
 		},
 	}

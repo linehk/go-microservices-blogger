@@ -21,18 +21,14 @@ var (
 	blogUserInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(blogUserInfoFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
 	blogUserInfoRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(blogUserInfoFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cachePublicBlogUserInfoIdPrefix       = "cache:public:blogUserInfo:id:"
-	cachePublicBlogUserInfoBlogUuidPrefix = "cache:public:blogUserInfo:blogUuid:"
-	cachePublicBlogUserInfoUserUuidPrefix = "cache:public:blogUserInfo:userUuid:"
-	cachePublicBlogUserInfoUuidPrefix     = "cache:public:blogUserInfo:uuid:"
+	cachePublicBlogUserInfoIdPrefix   = "cache:public:blogUserInfo:id:"
+	cachePublicBlogUserInfoUuidPrefix = "cache:public:blogUserInfo:uuid:"
 )
 
 type (
 	blogUserInfoModel interface {
 		Insert(ctx context.Context, data *BlogUserInfo) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*BlogUserInfo, error)
-		FindOneByBlogUuid(ctx context.Context, blogUuid string) (*BlogUserInfo, error)
-		FindOneByUserUuid(ctx context.Context, userUuid string) (*BlogUserInfo, error)
 		FindOneByUuid(ctx context.Context, uuid string) (*BlogUserInfo, error)
 		Update(ctx context.Context, data *BlogUserInfo) error
 		Delete(ctx context.Context, id int64) error
@@ -46,8 +42,8 @@ type (
 	BlogUserInfo struct {
 		Id             int64          `db:"id"`
 		Uuid           string         `db:"uuid"`
-		UserUuid       string         `db:"user_uuid"`
-		BlogUuid       string         `db:"blog_uuid"`
+		UserUuid       sql.NullString `db:"user_uuid"`
+		BlogUuid       sql.NullString `db:"blog_uuid"`
 		PhotosAlbumKey sql.NullString `db:"photos_album_key"`
 		HasAdminAccess sql.NullBool   `db:"has_admin_access"`
 	}
@@ -66,14 +62,12 @@ func (m *defaultBlogUserInfoModel) Delete(ctx context.Context, id int64) error {
 		return err
 	}
 
-	publicBlogUserInfoBlogUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoBlogUuidPrefix, data.BlogUuid)
 	publicBlogUserInfoIdKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoIdPrefix, id)
-	publicBlogUserInfoUserUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoUserUuidPrefix, data.UserUuid)
 	publicBlogUserInfoUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where id = $1", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, publicBlogUserInfoBlogUuidKey, publicBlogUserInfoIdKey, publicBlogUserInfoUserUuidKey, publicBlogUserInfoUuidKey)
+	}, publicBlogUserInfoIdKey, publicBlogUserInfoUuidKey)
 	return err
 }
 
@@ -84,46 +78,6 @@ func (m *defaultBlogUserInfoModel) FindOne(ctx context.Context, id int64) (*Blog
 		query := fmt.Sprintf("select %s from %s where id = $1 limit 1", blogUserInfoRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, id)
 	})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultBlogUserInfoModel) FindOneByBlogUuid(ctx context.Context, blogUuid string) (*BlogUserInfo, error) {
-	publicBlogUserInfoBlogUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoBlogUuidPrefix, blogUuid)
-	var resp BlogUserInfo
-	err := m.QueryRowIndexCtx(ctx, &resp, publicBlogUserInfoBlogUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where blog_uuid = $1 limit 1", blogUserInfoRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultBlogUserInfoModel) FindOneByUserUuid(ctx context.Context, userUuid string) (*BlogUserInfo, error) {
-	publicBlogUserInfoUserUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoUserUuidPrefix, userUuid)
-	var resp BlogUserInfo
-	err := m.QueryRowIndexCtx(ctx, &resp, publicBlogUserInfoUserUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where user_uuid = $1 limit 1", blogUserInfoRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, userUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -155,14 +109,12 @@ func (m *defaultBlogUserInfoModel) FindOneByUuid(ctx context.Context, uuid strin
 }
 
 func (m *defaultBlogUserInfoModel) Insert(ctx context.Context, data *BlogUserInfo) (sql.Result, error) {
-	publicBlogUserInfoBlogUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoBlogUuidPrefix, data.BlogUuid)
 	publicBlogUserInfoIdKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoIdPrefix, data.Id)
-	publicBlogUserInfoUserUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoUserUuidPrefix, data.UserUuid)
 	publicBlogUserInfoUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5)", m.table, blogUserInfoRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.Uuid, data.UserUuid, data.BlogUuid, data.PhotosAlbumKey, data.HasAdminAccess)
-	}, publicBlogUserInfoBlogUuidKey, publicBlogUserInfoIdKey, publicBlogUserInfoUserUuidKey, publicBlogUserInfoUuidKey)
+	}, publicBlogUserInfoIdKey, publicBlogUserInfoUuidKey)
 	return ret, err
 }
 
@@ -172,14 +124,12 @@ func (m *defaultBlogUserInfoModel) Update(ctx context.Context, newData *BlogUser
 		return err
 	}
 
-	publicBlogUserInfoBlogUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoBlogUuidPrefix, data.BlogUuid)
 	publicBlogUserInfoIdKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoIdPrefix, data.Id)
-	publicBlogUserInfoUserUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoUserUuidPrefix, data.UserUuid)
 	publicBlogUserInfoUuidKey := fmt.Sprintf("%s%v", cachePublicBlogUserInfoUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, blogUserInfoRowsWithPlaceHolder)
 		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.UserUuid, newData.BlogUuid, newData.PhotosAlbumKey, newData.HasAdminAccess)
-	}, publicBlogUserInfoBlogUuidKey, publicBlogUserInfoIdKey, publicBlogUserInfoUserUuidKey, publicBlogUserInfoUuidKey)
+	}, publicBlogUserInfoIdKey, publicBlogUserInfoUuidKey)
 	return err
 }
 

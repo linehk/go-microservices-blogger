@@ -23,7 +23,6 @@ var (
 
 	cachePublicImageIdPrefix         = "cache:public:image:id:"
 	cachePublicImageAuthorUuidPrefix = "cache:public:image:authorUuid:"
-	cachePublicImagePostUuidPrefix   = "cache:public:image:postUuid:"
 	cachePublicImageUuidPrefix       = "cache:public:image:uuid:"
 )
 
@@ -32,7 +31,6 @@ type (
 		Insert(ctx context.Context, data *Image) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Image, error)
 		FindOneByAuthorUuid(ctx context.Context, authorUuid string) (*Image, error)
-		FindOneByPostUuid(ctx context.Context, postUuid string) (*Image, error)
 		FindOneByUuid(ctx context.Context, uuid string) (*Image, error)
 		Update(ctx context.Context, data *Image) error
 		Delete(ctx context.Context, id int64) error
@@ -46,7 +44,7 @@ type (
 	Image struct {
 		Id         int64          `db:"id"`
 		Uuid       string         `db:"uuid"`
-		PostUuid   string         `db:"post_uuid"`
+		PostUuid   sql.NullString `db:"post_uuid"`
 		AuthorUuid string         `db:"author_uuid"`
 		Url        sql.NullString `db:"url"`
 	}
@@ -67,12 +65,11 @@ func (m *defaultImageModel) Delete(ctx context.Context, id int64) error {
 
 	publicImageAuthorUuidKey := fmt.Sprintf("%s%v", cachePublicImageAuthorUuidPrefix, data.AuthorUuid)
 	publicImageIdKey := fmt.Sprintf("%s%v", cachePublicImageIdPrefix, id)
-	publicImagePostUuidKey := fmt.Sprintf("%s%v", cachePublicImagePostUuidPrefix, data.PostUuid)
 	publicImageUuidKey := fmt.Sprintf("%s%v", cachePublicImageUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where id = $1", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, publicImageAuthorUuidKey, publicImageIdKey, publicImagePostUuidKey, publicImageUuidKey)
+	}, publicImageAuthorUuidKey, publicImageIdKey, publicImageUuidKey)
 	return err
 }
 
@@ -113,26 +110,6 @@ func (m *defaultImageModel) FindOneByAuthorUuid(ctx context.Context, authorUuid 
 	}
 }
 
-func (m *defaultImageModel) FindOneByPostUuid(ctx context.Context, postUuid string) (*Image, error) {
-	publicImagePostUuidKey := fmt.Sprintf("%s%v", cachePublicImagePostUuidPrefix, postUuid)
-	var resp Image
-	err := m.QueryRowIndexCtx(ctx, &resp, publicImagePostUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where post_uuid = $1 limit 1", imageRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, postUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
 func (m *defaultImageModel) FindOneByUuid(ctx context.Context, uuid string) (*Image, error) {
 	publicImageUuidKey := fmt.Sprintf("%s%v", cachePublicImageUuidPrefix, uuid)
 	var resp Image
@@ -156,12 +133,11 @@ func (m *defaultImageModel) FindOneByUuid(ctx context.Context, uuid string) (*Im
 func (m *defaultImageModel) Insert(ctx context.Context, data *Image) (sql.Result, error) {
 	publicImageAuthorUuidKey := fmt.Sprintf("%s%v", cachePublicImageAuthorUuidPrefix, data.AuthorUuid)
 	publicImageIdKey := fmt.Sprintf("%s%v", cachePublicImageIdPrefix, data.Id)
-	publicImagePostUuidKey := fmt.Sprintf("%s%v", cachePublicImagePostUuidPrefix, data.PostUuid)
 	publicImageUuidKey := fmt.Sprintf("%s%v", cachePublicImageUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4)", m.table, imageRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.Uuid, data.PostUuid, data.AuthorUuid, data.Url)
-	}, publicImageAuthorUuidKey, publicImageIdKey, publicImagePostUuidKey, publicImageUuidKey)
+	}, publicImageAuthorUuidKey, publicImageIdKey, publicImageUuidKey)
 	return ret, err
 }
 
@@ -173,12 +149,11 @@ func (m *defaultImageModel) Update(ctx context.Context, newData *Image) error {
 
 	publicImageAuthorUuidKey := fmt.Sprintf("%s%v", cachePublicImageAuthorUuidPrefix, data.AuthorUuid)
 	publicImageIdKey := fmt.Sprintf("%s%v", cachePublicImageIdPrefix, data.Id)
-	publicImagePostUuidKey := fmt.Sprintf("%s%v", cachePublicImagePostUuidPrefix, data.PostUuid)
 	publicImageUuidKey := fmt.Sprintf("%s%v", cachePublicImageUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, imageRowsWithPlaceHolder)
 		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.PostUuid, newData.AuthorUuid, newData.Url)
-	}, publicImageAuthorUuidKey, publicImageIdKey, publicImagePostUuidKey, publicImageUuidKey)
+	}, publicImageAuthorUuidKey, publicImageIdKey, publicImageUuidKey)
 	return err
 }
 

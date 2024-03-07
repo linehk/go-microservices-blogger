@@ -58,7 +58,7 @@ func TestGetByPath(t *testing.T) {
 	postModel := &model.Post{
 		Id:             1,
 		Uuid:           postId,
-		BlogUuid:       blogId,
+		BlogUuid:       sql.NullString{String: blogId, Valid: true},
 		Published:      sql.NullTime{Time: published, Valid: true},
 		Updated:        sql.NullTime{Time: updated, Valid: true},
 		Url:            postUrl,
@@ -79,13 +79,13 @@ func TestGetByPath(t *testing.T) {
 		{
 			Id:         1,
 			Uuid:       imageUuid1,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			AuthorUuid: authorUuid,
 			Url:        sql.NullString{String: imageUrl1, Valid: true},
 		}, {
 			Id:         2,
 			Uuid:       imageUuid2,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			AuthorUuid: authorUuid,
 			Url:        sql.NullString{String: imageUrl2, Valid: true},
 		},
@@ -111,7 +111,7 @@ func TestGetByPath(t *testing.T) {
 	authorImageModel := &model.Image{
 		Id:         1,
 		Uuid:       authorImageUuid,
-		PostUuid:   postId,
+		PostUuid:   sql.NullString{String: postId, Valid: true},
 		AuthorUuid: authorUuid,
 		Url:        sql.NullString{String: authorImageUrl, Valid: true},
 	}
@@ -181,12 +181,12 @@ func TestGetByPath(t *testing.T) {
 		{
 			Id:         1,
 			Uuid:       labelUuid1,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			LabelValue: sql.NullString{String: labelValue1, Valid: true},
 		}, {
 			Id:         2,
 			Uuid:       labelUuid2,
-			PostUuid:   postId,
+			PostUuid:   sql.NullString{String: postId, Valid: true},
 			LabelValue: sql.NullString{String: labelValue2, Valid: true},
 		},
 	}
@@ -287,7 +287,7 @@ func TestGetByPath(t *testing.T) {
 	actual, actualErr = logicService.GetByPath(getByPathReq)
 	assert.Nil(t, actual)
 	assert.Equal(t, expectedErr, actualErr)
-	
+
 	// Success
 	postRepo.EXPECT().FindOneByUrl(ctx, postUrl).Return(postModel, nil)
 	imageRepo.EXPECT().ListByPostUuid(ctx, postId).Return(imageModelList, nil)

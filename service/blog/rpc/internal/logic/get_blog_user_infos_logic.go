@@ -53,7 +53,7 @@ func (l *GetBlogUserInfosLogic) GetBlogUserInfos(in *blog.GetBlogUserInfosReq) (
 	convert.Copy(&blogUserInfos.Blog, blogResp)
 	convert.Copy(&blogUserInfos.BlogUserInfo, blogUserInfoModel)
 	blogUserInfos.BlogUserInfo.Kind = "blogger#blogPerUserInfo"
-	blogUserInfos.BlogUserInfo.UserId = blogUserInfoModel.UserUuid
-	blogUserInfos.BlogUserInfo.BlogId = blogUserInfoModel.BlogUuid
+	blogUserInfos.BlogUserInfo.UserId = blogUserInfoModel.UserUuid.String
+	blogUserInfos.BlogUserInfo.BlogId = blogUserInfoModel.BlogUuid.String
 	return &blogUserInfos, nil
 }

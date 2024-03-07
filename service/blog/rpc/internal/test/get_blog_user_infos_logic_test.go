@@ -54,7 +54,7 @@ func TestGetBlogUserInfos(t *testing.T) {
 	blogModel := &model.Blog{
 		Id:             1,
 		Uuid:           blogId,
-		AppUserUuid:    userId,
+		AppUserUuid:    sql.NullString{String: userId, Valid: true},
 		Name:           sql.NullString{String: name, Valid: true},
 		Description:    sql.NullString{String: description, Valid: true},
 		Published:      sql.NullTime{Time: published, Valid: true},
@@ -93,15 +93,15 @@ func TestGetBlogUserInfos(t *testing.T) {
 			SelfLink: pageSelfLink2,
 		}},
 	}
-	
+
 	blogUserInfoUuid := uuid.NewString()
 	photosAlbumKey := "PhotosAlbumKey"
 	hasAdminAccess := true
 	userBlogInfoModel := &model.BlogUserInfo{
 		Id:             1,
 		Uuid:           blogUserInfoUuid,
-		UserUuid:       userId,
-		BlogUuid:       blogId,
+		UserUuid:       sql.NullString{String: userId, Valid: true},
+		BlogUuid:       sql.NullString{String: blogId, Valid: true},
 		PhotosAlbumKey: sql.NullString{String: photosAlbumKey, Valid: true},
 		HasAdminAccess: sql.NullBool{Bool: hasAdminAccess, Valid: true},
 	}

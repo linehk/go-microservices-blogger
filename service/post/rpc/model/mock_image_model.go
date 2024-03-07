@@ -84,21 +84,6 @@ func (mr *MockImageModelMockRecorder) FindOneByAuthorUuid(arg0, arg1 any) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByAuthorUuid", reflect.TypeOf((*MockImageModel)(nil).FindOneByAuthorUuid), arg0, arg1)
 }
 
-// FindOneByPostUuid mocks base method.
-func (m *MockImageModel) FindOneByPostUuid(arg0 context.Context, arg1 string) (*Image, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOneByPostUuid", arg0, arg1)
-	ret0, _ := ret[0].(*Image)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindOneByPostUuid indicates an expected call of FindOneByPostUuid.
-func (mr *MockImageModelMockRecorder) FindOneByPostUuid(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByPostUuid", reflect.TypeOf((*MockImageModel)(nil).FindOneByPostUuid), arg0, arg1)
-}
-
 // FindOneByUuid mocks base method.
 func (m *MockImageModel) FindOneByUuid(arg0 context.Context, arg1 string) (*Image, error) {
 	m.ctrl.T.Helper()

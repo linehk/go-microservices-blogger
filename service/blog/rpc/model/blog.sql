@@ -1,7 +1,7 @@
 CREATE TABLE blog (
   id SERIAL PRIMARY KEY,
   uuid VARCHAR UNIQUE NOT NULL,
-  app_user_uuid VARCHAR UNIQUE NOT NULL,
+  app_user_uuid VARCHAR,
   name VARCHAR,
   description VARCHAR,
   published TIMESTAMP,
@@ -14,8 +14,8 @@ CREATE TABLE blog (
 CREATE TABLE blog_user_info (
   id SERIAL PRIMARY KEY,
   uuid VARCHAR UNIQUE NOT NULL,
-  user_uuid VARCHAR UNIQUE NOT NULL,
-  blog_uuid VARCHAR UNIQUE NOT NULL,
+  user_uuid VARCHAR,
+  blog_uuid VARCHAR,
   photos_album_key VARCHAR,
   has_admin_access BOOLEAN
 );

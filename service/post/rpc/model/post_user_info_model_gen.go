@@ -21,20 +21,14 @@ var (
 	postUserInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(postUserInfoFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
 	postUserInfoRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(postUserInfoFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cachePublicPostUserInfoIdPrefix       = "cache:public:postUserInfo:id:"
-	cachePublicPostUserInfoBlogUuidPrefix = "cache:public:postUserInfo:blogUuid:"
-	cachePublicPostUserInfoPostUuidPrefix = "cache:public:postUserInfo:postUuid:"
-	cachePublicPostUserInfoUserUuidPrefix = "cache:public:postUserInfo:userUuid:"
-	cachePublicPostUserInfoUuidPrefix     = "cache:public:postUserInfo:uuid:"
+	cachePublicPostUserInfoIdPrefix   = "cache:public:postUserInfo:id:"
+	cachePublicPostUserInfoUuidPrefix = "cache:public:postUserInfo:uuid:"
 )
 
 type (
 	postUserInfoModel interface {
 		Insert(ctx context.Context, data *PostUserInfo) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*PostUserInfo, error)
-		FindOneByBlogUuid(ctx context.Context, blogUuid string) (*PostUserInfo, error)
-		FindOneByPostUuid(ctx context.Context, postUuid string) (*PostUserInfo, error)
-		FindOneByUserUuid(ctx context.Context, userUuid string) (*PostUserInfo, error)
 		FindOneByUuid(ctx context.Context, uuid string) (*PostUserInfo, error)
 		Update(ctx context.Context, data *PostUserInfo) error
 		Delete(ctx context.Context, id int64) error
@@ -46,12 +40,12 @@ type (
 	}
 
 	PostUserInfo struct {
-		Id            int64        `db:"id"`
-		Uuid          string       `db:"uuid"`
-		UserUuid      string       `db:"user_uuid"`
-		BlogUuid      string       `db:"blog_uuid"`
-		PostUuid      string       `db:"post_uuid"`
-		HasEditAccess sql.NullBool `db:"has_edit_access"`
+		Id            int64          `db:"id"`
+		Uuid          string         `db:"uuid"`
+		UserUuid      sql.NullString `db:"user_uuid"`
+		BlogUuid      sql.NullString `db:"blog_uuid"`
+		PostUuid      sql.NullString `db:"post_uuid"`
+		HasEditAccess sql.NullBool   `db:"has_edit_access"`
 	}
 )
 
@@ -68,15 +62,12 @@ func (m *defaultPostUserInfoModel) Delete(ctx context.Context, id int64) error {
 		return err
 	}
 
-	publicPostUserInfoBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoBlogUuidPrefix, data.BlogUuid)
 	publicPostUserInfoIdKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoIdPrefix, id)
-	publicPostUserInfoPostUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoPostUuidPrefix, data.PostUuid)
-	publicPostUserInfoUserUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoUserUuidPrefix, data.UserUuid)
 	publicPostUserInfoUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where id = $1", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, publicPostUserInfoBlogUuidKey, publicPostUserInfoIdKey, publicPostUserInfoPostUuidKey, publicPostUserInfoUserUuidKey, publicPostUserInfoUuidKey)
+	}, publicPostUserInfoIdKey, publicPostUserInfoUuidKey)
 	return err
 }
 
@@ -87,66 +78,6 @@ func (m *defaultPostUserInfoModel) FindOne(ctx context.Context, id int64) (*Post
 		query := fmt.Sprintf("select %s from %s where id = $1 limit 1", postUserInfoRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, id)
 	})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultPostUserInfoModel) FindOneByBlogUuid(ctx context.Context, blogUuid string) (*PostUserInfo, error) {
-	publicPostUserInfoBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoBlogUuidPrefix, blogUuid)
-	var resp PostUserInfo
-	err := m.QueryRowIndexCtx(ctx, &resp, publicPostUserInfoBlogUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where blog_uuid = $1 limit 1", postUserInfoRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultPostUserInfoModel) FindOneByPostUuid(ctx context.Context, postUuid string) (*PostUserInfo, error) {
-	publicPostUserInfoPostUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoPostUuidPrefix, postUuid)
-	var resp PostUserInfo
-	err := m.QueryRowIndexCtx(ctx, &resp, publicPostUserInfoPostUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where post_uuid = $1 limit 1", postUserInfoRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, postUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultPostUserInfoModel) FindOneByUserUuid(ctx context.Context, userUuid string) (*PostUserInfo, error) {
-	publicPostUserInfoUserUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoUserUuidPrefix, userUuid)
-	var resp PostUserInfo
-	err := m.QueryRowIndexCtx(ctx, &resp, publicPostUserInfoUserUuidKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where user_uuid = $1 limit 1", postUserInfoRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, userUuid); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -178,15 +109,12 @@ func (m *defaultPostUserInfoModel) FindOneByUuid(ctx context.Context, uuid strin
 }
 
 func (m *defaultPostUserInfoModel) Insert(ctx context.Context, data *PostUserInfo) (sql.Result, error) {
-	publicPostUserInfoBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoBlogUuidPrefix, data.BlogUuid)
 	publicPostUserInfoIdKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoIdPrefix, data.Id)
-	publicPostUserInfoPostUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoPostUuidPrefix, data.PostUuid)
-	publicPostUserInfoUserUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoUserUuidPrefix, data.UserUuid)
 	publicPostUserInfoUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5)", m.table, postUserInfoRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.Uuid, data.UserUuid, data.BlogUuid, data.PostUuid, data.HasEditAccess)
-	}, publicPostUserInfoBlogUuidKey, publicPostUserInfoIdKey, publicPostUserInfoPostUuidKey, publicPostUserInfoUserUuidKey, publicPostUserInfoUuidKey)
+	}, publicPostUserInfoIdKey, publicPostUserInfoUuidKey)
 	return ret, err
 }
 
@@ -196,15 +124,12 @@ func (m *defaultPostUserInfoModel) Update(ctx context.Context, newData *PostUser
 		return err
 	}
 
-	publicPostUserInfoBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoBlogUuidPrefix, data.BlogUuid)
 	publicPostUserInfoIdKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoIdPrefix, data.Id)
-	publicPostUserInfoPostUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoPostUuidPrefix, data.PostUuid)
-	publicPostUserInfoUserUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoUserUuidPrefix, data.UserUuid)
 	publicPostUserInfoUuidKey := fmt.Sprintf("%s%v", cachePublicPostUserInfoUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, postUserInfoRowsWithPlaceHolder)
 		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.UserUuid, newData.BlogUuid, newData.PostUuid, newData.HasEditAccess)
-	}, publicPostUserInfoBlogUuidKey, publicPostUserInfoIdKey, publicPostUserInfoPostUuidKey, publicPostUserInfoUserUuidKey, publicPostUserInfoUuidKey)
+	}, publicPostUserInfoIdKey, publicPostUserInfoUuidKey)
 	return err
 }
 

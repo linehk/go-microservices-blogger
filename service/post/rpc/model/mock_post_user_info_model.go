@@ -69,51 +69,6 @@ func (mr *MockPostUserInfoModelMockRecorder) FindOne(arg0, arg1 any) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockPostUserInfoModel)(nil).FindOne), arg0, arg1)
 }
 
-// FindOneByBlogUuid mocks base method.
-func (m *MockPostUserInfoModel) FindOneByBlogUuid(arg0 context.Context, arg1 string) (*PostUserInfo, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOneByBlogUuid", arg0, arg1)
-	ret0, _ := ret[0].(*PostUserInfo)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindOneByBlogUuid indicates an expected call of FindOneByBlogUuid.
-func (mr *MockPostUserInfoModelMockRecorder) FindOneByBlogUuid(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByBlogUuid", reflect.TypeOf((*MockPostUserInfoModel)(nil).FindOneByBlogUuid), arg0, arg1)
-}
-
-// FindOneByPostUuid mocks base method.
-func (m *MockPostUserInfoModel) FindOneByPostUuid(arg0 context.Context, arg1 string) (*PostUserInfo, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOneByPostUuid", arg0, arg1)
-	ret0, _ := ret[0].(*PostUserInfo)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindOneByPostUuid indicates an expected call of FindOneByPostUuid.
-func (mr *MockPostUserInfoModelMockRecorder) FindOneByPostUuid(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByPostUuid", reflect.TypeOf((*MockPostUserInfoModel)(nil).FindOneByPostUuid), arg0, arg1)
-}
-
-// FindOneByUserUuid mocks base method.
-func (m *MockPostUserInfoModel) FindOneByUserUuid(arg0 context.Context, arg1 string) (*PostUserInfo, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOneByUserUuid", arg0, arg1)
-	ret0, _ := ret[0].(*PostUserInfo)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindOneByUserUuid indicates an expected call of FindOneByUserUuid.
-func (mr *MockPostUserInfoModelMockRecorder) FindOneByUserUuid(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByUserUuid", reflect.TypeOf((*MockPostUserInfoModel)(nil).FindOneByUserUuid), arg0, arg1)
-}
-
 // FindOneByUserUuidAndBlogUuidAndPostUuid mocks base method.
 func (m *MockPostUserInfoModel) FindOneByUserUuidAndBlogUuidAndPostUuid(arg0 context.Context, arg1, arg2, arg3 string) (*PostUserInfo, error) {
 	m.ctrl.T.Helper()

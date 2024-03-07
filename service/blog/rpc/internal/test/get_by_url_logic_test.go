@@ -49,7 +49,7 @@ func TestGetByUrl(t *testing.T) {
 	blogModel := &model.Blog{
 		Id:             1,
 		Uuid:           blogId,
-		AppUserUuid:    userId,
+		AppUserUuid:    sql.NullString{String: userId, Valid: true},
 		Name:           sql.NullString{String: name, Valid: true},
 		Description:    sql.NullString{String: description, Valid: true},
 		Published:      sql.NullTime{Time: published, Valid: true},
