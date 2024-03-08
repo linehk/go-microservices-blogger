@@ -114,6 +114,21 @@ func (mr *MockPostUserInfoModelMockRecorder) Insert(arg0, arg1 any) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockPostUserInfoModel)(nil).Insert), arg0, arg1)
 }
 
+// ListByUserUuidAndBlogUuid mocks base method.
+func (m *MockPostUserInfoModel) ListByUserUuidAndBlogUuid(arg0 context.Context, arg1, arg2 string) ([]*PostUserInfo, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByUserUuidAndBlogUuid", arg0, arg1, arg2)
+	ret0, _ := ret[0].([]*PostUserInfo)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByUserUuidAndBlogUuid indicates an expected call of ListByUserUuidAndBlogUuid.
+func (mr *MockPostUserInfoModelMockRecorder) ListByUserUuidAndBlogUuid(arg0, arg1, arg2 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByUserUuidAndBlogUuid", reflect.TypeOf((*MockPostUserInfoModel)(nil).ListByUserUuidAndBlogUuid), arg0, arg1, arg2)
+}
+
 // Update mocks base method.
 func (m *MockPostUserInfoModel) Update(arg0 context.Context, arg1 *PostUserInfo) error {
 	m.ctrl.T.Helper()

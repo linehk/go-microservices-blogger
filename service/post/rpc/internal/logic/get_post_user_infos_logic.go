@@ -36,7 +36,10 @@ func (l *GetPostUserInfosLogic) GetPostUserInfos(in *post.GetPostUserInfosReq) (
 		l.Error(errcode.Msg(errcode.Database))
 		return nil, errcode.Wrap(errcode.Database)
 	}
+	return GetPostUserInfos(l.ctx, l.svcCtx, l, postUserInfosModel)
+}
 
+func GetPostUserInfos(ctx context.Context, svcCtx *svc.ServiceContext, l logx.Logger, postUserInfosModel *model.PostUserInfo) (*post.PostUserInfos, error) {
 	var postUserInfosResp post.PostUserInfos
 	postUserInfosResp.Kind = "blogger#postUserInfo"
 	postUserInfosResp.PostUserInfo = &post.PostUserInfo{}
@@ -46,7 +49,7 @@ func (l *GetPostUserInfosLogic) GetPostUserInfos(in *post.GetPostUserInfosReq) (
 	postUserInfosResp.PostUserInfo.BlogId = postUserInfosModel.BlogUuid.String
 	postUserInfosResp.PostUserInfo.PostId = postUserInfosModel.PostUuid.String
 
-	postModel, err := l.svcCtx.PostModel.FindOneByBlogUuidAndPostUuid(l.ctx, in.GetBlogId(), in.GetPostId())
+	postModel, err := svcCtx.PostModel.FindOneByBlogUuidAndPostUuid(ctx, postUserInfosModel.BlogUuid.String, postUserInfosModel.PostUuid.String)
 	if errors.Is(err, model.ErrNotFound) {
 		l.Error(errcode.Msg(errcode.PostNotExist))
 		return nil, errcode.Wrap(errcode.PostNotExist)
@@ -55,7 +58,7 @@ func (l *GetPostUserInfosLogic) GetPostUserInfos(in *post.GetPostUserInfosReq) (
 		l.Error(errcode.Msg(errcode.Database))
 		return nil, errcode.Wrap(errcode.Database)
 	}
-	postResp, err := Get(l.ctx, l.svcCtx, l.Logger, postModel)
+	postResp, err := Get(ctx, svcCtx, l, postModel)
 	if err != nil {
 		return nil, err
 	}

@@ -18,6 +18,7 @@ type (
 	PostUserInfoModel interface {
 		postUserInfoModel
 		FindOneByUserUuidAndBlogUuidAndPostUuid(ctx context.Context, userUuid, blogUuid, postUuid string) (*PostUserInfo, error)
+		ListByUserUuidAndBlogUuid(ctx context.Context, userUuid, blogUuid string) ([]*PostUserInfo, error)
 	}
 
 	customPostUserInfoModel struct {
@@ -34,6 +35,7 @@ func NewPostUserInfoModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Op
 
 var (
 	cachePublicPostUserInfoUserUuidBlogUuidPostUuid = "cache:public:postUserInfo:userUuid:%s:blogUuid:%s:postUuid:%s"
+	cachePublicPostUserInfoUserUuidBlogUuid         = "cache:public:postUserInfo:userUuid:%s:blogUuid:%s"
 )
 
 func (c *customPostUserInfoModel) FindOneByUserUuidAndBlogUuidAndPostUuid(ctx context.Context, userUuid, blogUuid, postUuid string) (*PostUserInfo, error) {
@@ -49,6 +51,26 @@ func (c *customPostUserInfoModel) FindOneByUserUuidAndBlogUuidAndPostUuid(ctx co
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (c *customPostUserInfoModel) ListByUserUuidAndBlogUuid(ctx context.Context, userUuid, blogUuid string) ([]*PostUserInfo, error) {
+	publicPostUserInfoBlogUuidKey := fmt.Sprintf(cachePublicPostUserInfoUserUuidBlogUuid, userUuid, blogUuid)
+	var resp []*PostUserInfo
+	err := c.QueryRowIndexCtx(ctx, &resp, publicPostUserInfoBlogUuidKey, c.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where user_uuid = $1 and blog_uuid = $2", postUserInfoRows, c.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, userUuid, blogUuid); err != nil {
+			return nil, err
+		}
+		return resp[0].Id, nil
+	}, c.queryPrimary)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
