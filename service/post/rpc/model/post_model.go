@@ -19,6 +19,7 @@ type (
 		postModel
 		FindOneByBlogUuidAndPostUuid(ctx context.Context, blogUuid, postUuid string) (*Post, error)
 		ListByBlogUuid(ctx context.Context, blogUuid string) ([]*Post, error)
+		SearchByTitle(ctx context.Context, blogUuid, title string) ([]*Post, error)
 	}
 
 	customPostModel struct {
@@ -36,6 +37,7 @@ func NewPostModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) Po
 var (
 	cachePublicPostBlogUuidAndPostUuid = "cache:public:post:blogUuid:%s:postUuid:%s"
 	cachePublicPostBlogUuidPrefix      = "cache:public:post:blogUuid:"
+	cachePublicPostBlogUuidAndTitle    = "cache:public:post:blogUuid:%s:title:%s"
 )
 
 func (c *customPostModel) FindOneByBlogUuidAndPostUuid(ctx context.Context, blogUuid, postUuid string) (*Post, error) {
@@ -64,6 +66,26 @@ func (c *customPostModel) ListByBlogUuid(ctx context.Context, blogUuid string) (
 	err := c.QueryRowIndexCtx(ctx, &resp, publicPostBlogUuidKey, c.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
 		query := fmt.Sprintf("select %s from %s where blog_uuid = $1", postRows, c.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid); err != nil {
+			return nil, err
+		}
+		return resp[0].Id, nil
+	}, c.queryPrimary)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (c *customPostModel) SearchByTitle(ctx context.Context, blogUuid, title string) ([]*Post, error) {
+	publicPostBlogUuidAndTitleKey := fmt.Sprintf(cachePublicPostBlogUuidAndTitle, blogUuid, title)
+	var resp []*Post
+	err := c.QueryRowIndexCtx(ctx, &resp, publicPostBlogUuidAndTitleKey, c.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where blog_uuid = $1 and title like $2", postRows, c.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid, "'"+title+"%'"); err != nil {
 			return nil, err
 		}
 		return resp[0].Id, nil
