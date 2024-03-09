@@ -6,7 +6,7 @@ CREATE TABLE page (
   published TIMESTAMP,
   updated TIMESTAMP,
   url VARCHAR,
-  selfLink VARCHAR,
+  self_link VARCHAR,
   title VARCHAR,
   content VARCHAR
 );

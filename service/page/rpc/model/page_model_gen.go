@@ -47,7 +47,7 @@ type (
 		Published sql.NullTime   `db:"published"`
 		Updated   sql.NullTime   `db:"updated"`
 		Url       sql.NullString `db:"url"`
-		Selflink  sql.NullString `db:"selflink"`
+		SelfLink  sql.NullString `db:"self_link"`
 		Title     sql.NullString `db:"title"`
 		Content   sql.NullString `db:"content"`
 	}
@@ -117,7 +117,7 @@ func (m *defaultPageModel) Insert(ctx context.Context, data *Page) (sql.Result, 
 	publicPageUuidKey := fmt.Sprintf("%s%v", cachePublicPageUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)", m.table, pageRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.Uuid, data.BlogUuid, data.Status, data.Published, data.Updated, data.Url, data.Selflink, data.Title, data.Content)
+		return conn.ExecCtx(ctx, query, data.Uuid, data.BlogUuid, data.Status, data.Published, data.Updated, data.Url, data.SelfLink, data.Title, data.Content)
 	}, publicPageIdKey, publicPageUuidKey)
 	return ret, err
 }
@@ -132,7 +132,7 @@ func (m *defaultPageModel) Update(ctx context.Context, newData *Page) error {
 	publicPageUuidKey := fmt.Sprintf("%s%v", cachePublicPageUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, pageRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.BlogUuid, newData.Status, newData.Published, newData.Updated, newData.Url, newData.Selflink, newData.Title, newData.Content)
+		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.BlogUuid, newData.Status, newData.Published, newData.Updated, newData.Url, newData.SelfLink, newData.Title, newData.Content)
 	}, publicPageIdKey, publicPageUuidKey)
 	return err
 }
