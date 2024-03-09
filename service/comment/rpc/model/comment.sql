@@ -6,6 +6,6 @@ CREATE TABLE comment (
   status VARCHAR,
   published TIMESTAMP,
   updated TIMESTAMP,
-  selfLink VARCHAR,
+  self_link VARCHAR,
   content VARCHAR
 );

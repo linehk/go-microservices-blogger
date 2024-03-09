@@ -47,7 +47,7 @@ type (
 		Status    sql.NullString `db:"status"`
 		Published sql.NullTime   `db:"published"`
 		Updated   sql.NullTime   `db:"updated"`
-		Selflink  sql.NullString `db:"selflink"`
+		SelfLink  sql.NullString `db:"self_link"`
 		Content   sql.NullString `db:"content"`
 	}
 )
@@ -116,7 +116,7 @@ func (m *defaultCommentModel) Insert(ctx context.Context, data *Comment) (sql.Re
 	publicCommentUuidKey := fmt.Sprintf("%s%v", cachePublicCommentUuidPrefix, data.Uuid)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8)", m.table, commentRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.Uuid, data.BlogUuid, data.PostUuid, data.Status, data.Published, data.Updated, data.Selflink, data.Content)
+		return conn.ExecCtx(ctx, query, data.Uuid, data.BlogUuid, data.PostUuid, data.Status, data.Published, data.Updated, data.SelfLink, data.Content)
 	}, publicCommentIdKey, publicCommentUuidKey)
 	return ret, err
 }
@@ -131,7 +131,7 @@ func (m *defaultCommentModel) Update(ctx context.Context, newData *Comment) erro
 	publicCommentUuidKey := fmt.Sprintf("%s%v", cachePublicCommentUuidPrefix, data.Uuid)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where id = $1", m.table, commentRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.BlogUuid, newData.PostUuid, newData.Status, newData.Published, newData.Updated, newData.Selflink, newData.Content)
+		return conn.ExecCtx(ctx, query, newData.Id, newData.Uuid, newData.BlogUuid, newData.PostUuid, newData.Status, newData.Published, newData.Updated, newData.SelfLink, newData.Content)
 	}, publicCommentIdKey, publicCommentUuidKey)
 	return err
 }
