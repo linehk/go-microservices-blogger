@@ -22,6 +22,8 @@ const (
 	LabelNotExist         uint32 = 50003
 	LocationNotExist      uint32 = 50004
 	PostUserInfosNotExist uint32 = 50005
+
+	PageNotExist uint32 = 60000
 )
 
 var msg = map[uint32]string{
@@ -41,6 +43,8 @@ var msg = map[uint32]string{
 	LabelNotExist:         "label not exist",
 	LocationNotExist:      "location not exist",
 	PostUserInfosNotExist: "post user info not exist",
+
+	PageNotExist: "page not exist",
 }
 
 func Wrap(e uint32) error {
