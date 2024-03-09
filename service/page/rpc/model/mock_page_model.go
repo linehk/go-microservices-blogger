@@ -114,6 +114,21 @@ func (mr *MockPageModelMockRecorder) Insert(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockPageModel)(nil).Insert), arg0, arg1)
 }
 
+// ListByBlogUuid mocks base method.
+func (m *MockPageModel) ListByBlogUuid(arg0 context.Context, arg1 string) ([]*Page, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByBlogUuid", arg0, arg1)
+	ret0, _ := ret[0].([]*Page)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByBlogUuid indicates an expected call of ListByBlogUuid.
+func (mr *MockPageModelMockRecorder) ListByBlogUuid(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByBlogUuid", reflect.TypeOf((*MockPageModel)(nil).ListByBlogUuid), arg0, arg1)
+}
+
 // Update mocks base method.
 func (m *MockPageModel) Update(arg0 context.Context, arg1 *Page) error {
 	m.ctrl.T.Helper()

@@ -18,6 +18,7 @@ type (
 	PageModel interface {
 		pageModel
 		FindOneByBlogUuidAndPageUuid(ctx context.Context, blogUuid, pageUuid string) (*Page, error)
+		ListByBlogUuid(ctx context.Context, blogUuid string) ([]*Page, error)
 	}
 
 	customPageModel struct {
@@ -34,6 +35,7 @@ func NewPageModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) Pa
 
 var (
 	cachePublicBlogUuidAndPageUuid = "cache:public:page:blogUuid:%s:pageUuid:%s"
+	cachePublicPageBlogUuidPrefix  = "cache:public:page:blogUuid:"
 )
 
 func (c *customPageModel) FindOneByBlogUuidAndPageUuid(ctx context.Context, blogUuid, pageUuid string) (*Page, error) {
@@ -49,6 +51,26 @@ func (c *customPageModel) FindOneByBlogUuidAndPageUuid(ctx context.Context, blog
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (c *customPageModel) ListByBlogUuid(ctx context.Context, blogUuid string) ([]*Page, error) {
+	publicPageBlogUuidKey := fmt.Sprintf("%s%v", cachePublicPageBlogUuidPrefix, blogUuid)
+	var resp []*Page
+	err := c.QueryRowIndexCtx(ctx, &resp, publicPageBlogUuidKey, c.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where blog_uuid = $1", pageRows, c.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid); err != nil {
+			return nil, err
+		}
+		return resp[0].Id, nil
+	}, c.queryPrimary)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
