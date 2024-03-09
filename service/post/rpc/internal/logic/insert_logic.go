@@ -104,7 +104,7 @@ func (l *InsertLogic) Insert(in *post.InsertReq) (*post.Post, error) {
 			Status:    sql.NullString{String: commentReq.GetStatus(), Valid: true},
 			Published: sql.NullTime{Time: commentReq.GetPublished().AsTime(), Valid: true},
 			Updated:   sql.NullTime{Time: commentReq.GetUpdated().AsTime(), Valid: true},
-			Selflink:  sql.NullString{String: commentReq.GetSelfLink(), Valid: true},
+			SelfLink:  sql.NullString{String: commentReq.GetSelfLink(), Valid: true},
 			Content:   sql.NullString{String: commentReq.GetContent(), Valid: true},
 		}
 		_, err := l.svcCtx.CommentModel.Insert(l.ctx, commentModel)
