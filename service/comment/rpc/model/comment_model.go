@@ -1,7 +1,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -13,6 +17,7 @@ type (
 	// and implement the added methods in customCommentModel.
 	CommentModel interface {
 		commentModel
+		ListByBlogUuidAndPostUuid(ctx context.Context, blogUuid, postUuid string) ([]*Comment, error)
 	}
 
 	customCommentModel struct {
@@ -24,5 +29,29 @@ type (
 func NewCommentModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) CommentModel {
 	return &customCommentModel{
 		defaultCommentModel: newCommentModel(conn, c, opts...),
+	}
+}
+
+var (
+	cachePublicCommentBlogUuidAndPostUuid = "cache:public:comment:blogUuid:%s:postUuid:%s"
+)
+
+func (c *customCommentModel) ListByBlogUuidAndPostUuid(ctx context.Context, blogUuid, postUuid string) ([]*Comment, error) {
+	publicCommentBlogUuidAndPostUuidKey := fmt.Sprintf(cachePublicCommentBlogUuidAndPostUuid, blogUuid, postUuid)
+	var resp []*Comment
+	err := c.QueryRowIndexCtx(ctx, &resp, publicCommentBlogUuidAndPostUuidKey, c.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where blog_uuid = $1 and post_uuid = $2", commentRows, c.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid, postUuid); err != nil {
+			return nil, err
+		}
+		return resp[0].Id, nil
+	}, c.queryPrimary)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
 	}
 }
