@@ -18,6 +18,7 @@ type (
 	CommentModel interface {
 		commentModel
 		ListByBlogUuidAndPostUuid(ctx context.Context, blogUuid, postUuid string) ([]*Comment, error)
+		ListByBlogUuid(ctx context.Context, blogUuid string) ([]*Comment, error)
 	}
 
 	customCommentModel struct {
@@ -34,6 +35,7 @@ func NewCommentModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option)
 
 var (
 	cachePublicCommentBlogUuidAndPostUuid = "cache:public:comment:blogUuid:%s:postUuid:%s"
+	cachePublicCommentBlogUuid            = "cache:public:comment:blogUuid:%s"
 )
 
 func (c *customCommentModel) ListByBlogUuidAndPostUuid(ctx context.Context, blogUuid, postUuid string) ([]*Comment, error) {
@@ -42,6 +44,26 @@ func (c *customCommentModel) ListByBlogUuidAndPostUuid(ctx context.Context, blog
 	err := c.QueryRowIndexCtx(ctx, &resp, publicCommentBlogUuidAndPostUuidKey, c.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
 		query := fmt.Sprintf("select %s from %s where blog_uuid = $1 and post_uuid = $2", commentRows, c.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid, postUuid); err != nil {
+			return nil, err
+		}
+		return resp[0].Id, nil
+	}, c.queryPrimary)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (c *customCommentModel) ListByBlogUuid(ctx context.Context, blogUuid string) ([]*Comment, error) {
+	publicCommentBlogUuidKey := fmt.Sprintf(cachePublicCommentBlogUuid, blogUuid)
+	var resp []*Comment
+	err := c.QueryRowIndexCtx(ctx, &resp, publicCommentBlogUuidKey, c.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where blog_uuid = $1", commentRows, c.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, blogUuid); err != nil {
 			return nil, err
 		}
 		return resp[0].Id, nil

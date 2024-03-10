@@ -99,6 +99,21 @@ func (mr *MockCommentModelMockRecorder) Insert(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockCommentModel)(nil).Insert), arg0, arg1)
 }
 
+// ListByBlogUuid mocks base method.
+func (m *MockCommentModel) ListByBlogUuid(arg0 context.Context, arg1 string) ([]*Comment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByBlogUuid", arg0, arg1)
+	ret0, _ := ret[0].([]*Comment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByBlogUuid indicates an expected call of ListByBlogUuid.
+func (mr *MockCommentModelMockRecorder) ListByBlogUuid(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByBlogUuid", reflect.TypeOf((*MockCommentModel)(nil).ListByBlogUuid), arg0, arg1)
+}
+
 // ListByBlogUuidAndPostUuid mocks base method.
 func (m *MockCommentModel) ListByBlogUuidAndPostUuid(arg0 context.Context, arg1, arg2 string) ([]*Comment, error) {
 	m.ctrl.T.Helper()
