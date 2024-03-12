@@ -1,7 +1,7 @@
 # go-microservices-blogger
 
 [![build](https://github.com/linehk/go-microservices-blogger/actions/workflows/build.yml/badge.svg "build")](https://github.com/go-gorm/gorm/actions)
-[![codecov](https://codecov.io/gh/linehk/go-microservices-blogger/graph/badge.svg?token=eKiZDX7JQ5 "codecov")](https://codecov.io/gh/linehk/go-microservices-blogger)
+[![codecov](https://codecov.io/gh/linehk/go-microservices-blogger/graph/badge.svg "codecov")](https://codecov.io/gh/linehk/go-microservices-blogger)
 [![go report](https://goreportcard.com/badge/github.com/linehk/go-microservices-blogger "go report")](https://goreportcard.com/report/github.com/linehk/go-microservices-blogger)
 
 English | [简体中文](./README-zh.md "简体中文")
